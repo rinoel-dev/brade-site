@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ciência da Alta Conversão — BRADE</title>
+  <meta name="description" content="Aprenda a ciência por trás das vendas de alta conversão. Do mental ao fechamento, um processo estruturado para você vender mais.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'brand-orange': '#eb5e28',
+            'brand-orange-bright': '#FF3E11',
+            'brand-cream': '#efece3',
+            'brand-dark': '#2c2324',
+            'brand-warm': '#766754',
+          },
+          fontFamily: {
+            'display': ['"DM Serif Display"', 'serif'],
+            'body': ['"Inter"', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; color: #2c2324; margin: 0; -webkit-font-smoothing: antialiased; }
+    h1, h2, h3, h4 { font-family: 'Inter', sans-serif; letter-spacing: -0.03em; line-height: 1.1; }
+    p { line-height: 1.7; }
+
+    /* CTA buttons */
+    .cta-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 18px 36px; background: #eb5e28; color: #fff;
+      font-family: 'Inter', sans-serif; font-weight: 700; font-size: 18px;
+      border-radius: 12px; text-decoration: none; border: none; cursor: pointer;
+      box-shadow: 0 2px 4px rgba(235,94,40,0.3), 0 8px 24px rgba(235,94,40,0.25);
+      transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease, background-color 0.2s ease;
+    }
+    .cta-primary:hover {
+      background: #FF3E11; transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(255,62,17,0.35), 0 12px 32px rgba(255,62,17,0.3);
+    }
+    .cta-primary:focus-visible { outline: 3px solid #FF3E11; outline-offset: 3px; }
+    .cta-primary:active { transform: translateY(0); box-shadow: 0 1px 2px rgba(235,94,40,0.3); }
+
+    .cta-inverted {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 18px 36px; background: #fff; color: #eb5e28;
+      font-family: 'Inter', sans-serif; font-weight: 700; font-size: 18px;
+      border-radius: 12px; text-decoration: none; border: none; cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1), 0 8px 24px rgba(0,0,0,0.08);
+      transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease, background-color 0.2s ease, color 0.2s ease;
+    }
+    .cta-inverted:hover {
+      background: #2c2324; color: #fff; transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2), 0 12px 32px rgba(0,0,0,0.15);
+    }
+    .cta-inverted:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+    .cta-inverted:active { transform: translateY(0); box-shadow: 0 1px 2px rgba(0,0,0,0.15); }
+
+    /* Module cards */
+    .module-card {
+      background: rgba(255,255,255,0.06); border-radius: 12px; padding: 24px;
+      border-left: 3px solid #eb5e28;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2), 0 8px 24px rgba(0,0,0,0.1);
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease, background 0.3s ease;
+    }
+    .module-card:hover {
+      transform: translateY(-2px); background: rgba(255,255,255,0.1);
+      box-shadow: 0 2px 6px rgba(235,94,40,0.15), 0 12px 32px rgba(0,0,0,0.15);
+    }
+
+    /* Phase cards */
+    .phase-card {
+      background: rgba(0,0,0,0.15); backdrop-filter: blur(2px);
+      border-radius: 12px; padding: 24px;
+    }
+
+    /* Video facade */
+    .video-facade {
+      position: relative; cursor: pointer; overflow: hidden;
+      border-radius: 12px; background: #2c2324;
+      box-shadow: 0 1px 3px rgba(44,35,36,0.08), 0 8px 24px rgba(44,35,36,0.04);
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease;
+    }
+    .video-facade:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 2px 6px rgba(44,35,36,0.12), 0 12px 32px rgba(44,35,36,0.08);
+    }
+    .video-facade img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .video-facade::after {
+      content: ''; position: absolute; inset: 0;
+      background: rgba(0,0,0,0.25);
+      transition: background 0.3s ease;
+    }
+    .video-facade:hover::after { background: rgba(0,0,0,0.1); }
+    .play-btn {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      z-index: 2; width: 64px; height: 64px; border-radius: 50%;
+      background: #eb5e28; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 16px rgba(235,94,40,0.4);
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), background-color 0.2s ease;
+    }
+    .video-facade:hover .play-btn { transform: translate(-50%,-50%) scale(1.1); background: #FF3E11; }
+    .play-btn svg { width: 24px; height: 24px; margin-left: 3px; }
+
+    /* FAQ accordion */
+    details summary { cursor: pointer; list-style: none; }
+    details summary::-webkit-details-marker { display: none; }
+    details summary::after {
+      content: '+'; font-size: 24px; font-weight: 600; color: #fff;
+      transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+      display: inline-block;
+    }
+    details[open] summary::after { transform: rotate(45deg); }
+
+    /* Grain overlay */
+    body::after {
+      content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+      opacity: 0.035; mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-repeat: repeat; background-size: 256px 256px;
+    }
+
+    /* Profession pills */
+    .prof-pill {
+      background: rgba(255,255,255,0.15); padding: 2px 8px;
+      border-radius: 4px; font-weight: 600; white-space: nowrap;
+    }
+
+    /* Stat item */
+    .stat-number {
+      font-family: 'Inter', sans-serif; font-size: 36px; font-weight: 900;
+      color: #eb5e28; letter-spacing: -0.04em; line-height: 1.0;
+    }
+    @media (min-width: 1024px) { .stat-number { font-size: 56px; } }
+
+    /* Section blends */
+    .blend {
+      height: 160px;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+      margin-top: -1px;
+      margin-bottom: -1px;
+    }
+    @media (min-width: 1024px) { .blend { height: 200px; } }
+
+    /* Scroll-driven nav */
+    .nav-bar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 16px 24px;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .nav-bar.scrolled {
+      background: rgba(0,0,0,0.9); backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.05);
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== NAV ===== -->
+<nav class="nav-bar" id="navbar">
+  <div class="max-w-6xl mx-auto flex items-center justify-between">
+    <a href="#">
+      <img src="elementos%20logo/logo-white.svg" alt="BRADE" class="h-20 lg:h-28" style="width:auto;">
+    </a>
+    <a href="#comprar" class="cta-primary hidden sm:inline-flex" style="padding:12px 24px; font-size:14px;">
+      Quero entrar
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+    </a>
+  </div>
+</nav>
+
+<!-- ===== SECTION 1: HERO ===== -->
+<section class="relative overflow-hidden min-h-screen">
+  <!-- bg5 background image -->
+  <div class="absolute inset-0">
+    <img src="elementos%20logo/bg5.png" alt="" class="w-full h-full object-cover object-top">
+  </div>
+  <!-- Gradient overlay -->
+  <div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(235,94,40,0.1) 0%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.85) 75%, #000000 100%);"></div>
+  <div class="absolute inset-0" style="background: radial-gradient(ellipse at 15% 10%, rgba(235,94,40,0.4) 0%, transparent 45%);"></div>
+
+  <!-- Content — two columns: text left, badges right -->
+  <div class="relative z-10 max-w-7xl mx-auto px-6 pt-32 lg:pt-36 pb-12 lg:pb-16 min-h-screen flex flex-col justify-between">
+    <!-- Spacer -->
+    <div class="flex-1"></div>
+
+    <!-- Bottom: Headline + sub + CTA -->
+    <div>
+      <h1 class="font-body text-4xl sm:text-5xl lg:text-7xl text-white mb-5" style="letter-spacing: -0.04em; line-height: 0.95; max-width: 700px;">
+        <span class="font-light">O seu maior</span><br>
+        <span class="font-black">concorrente</span><br>
+        <span class="font-light">prefere que você</span><br>
+        <span class="font-black">seja ruim</span><br>
+        <span class="font-light">em vendas.</span>
+      </h1>
+
+      <p class="font-body text-base lg:text-lg text-white/60 mb-6" style="max-width: 440px; line-height: 1.6;">Ele não improvisa. Ele tem passos claros pra fechar clientes. A Ciência da Alta Conversão existe pra inverter esse jogo.</p>
+
+      <a href="#comprar" class="cta-primary justify-center lg:justify-start" style="padding: 12px 24px; font-size: 15px;">
+        Quero aprender a Ciência da Alta Conversão
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Blend 1→2: seamless dark -->
+<div class="blend" style="background: #000000;"></div>
+
+<!-- ===== SECTION 2: PAIN / IDENTIFICATION ===== -->
+<section class="bg-black py-16 lg:py-28 px-6 relative overflow-hidden">
+  <!-- bg4 decorative image -->
+  <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+    <img src="elementos%20logo/bg4.jpg" alt="" class="w-full h-full object-cover" style="opacity: 0.3;">
+  </div>
+  <div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.7) 100%);"></div>
+
+  <div class="max-w-3xl mx-auto relative z-10">
+    <h2 class="font-body text-3xl lg:text-5xl text-white mb-8" style="letter-spacing: -0.03em; line-height: 1.05;"><span class="font-light">Você já perdeu uma venda</span> <span class="font-black">e não soube dizer onde errou.</span></h2>
+
+    <div class="border-l-4 border-brand-orange pl-6 space-y-6">
+      <p class="text-brand-cream/85 text-lg">O cliente parecia interessado, a conversa fluía bem e mesmo assim ele sumiu. Você sente que não segue uma lógica clara e não entende por quê a venda não entra.</p>
+
+      <p class="font-body text-xl lg:text-3xl" style="line-height: 1.15; letter-spacing: -0.02em;"><span class="text-brand-orange font-black">Isso não é azar.</span> <span class="text-white/90 font-light">É uma arquitetura de vendas errada.</span></p>
+
+      <p class="text-brand-cream/85 text-lg">Quem vende sem processos comete erros de segunda a sexta e atribui ao mercado, ao produto ou ao preço. Mas o problema muitas vezes não é esforço, é falta de processo. Enquanto isso não muda, o resultado também não muda.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Blend 2→3: Black → warm → Orange -->
+<div class="blend" style="background: linear-gradient(to bottom, #000000, #3d1a0a, #8a3010, #eb5e28);"></div>
+
+<!-- ===== SECTION 3: PHASES ===== -->
+<section class="relative py-16 lg:py-28 px-6 overflow-hidden">
+  <!-- bg1 background -->
+  <div class="absolute inset-0">
+    <img src="elementos%20logo/bg1.jpg" alt="" class="w-full h-full object-cover">
+  </div>
+  <div class="absolute inset-0" style="background: rgba(235,94,40,0.85); mix-blend-mode: multiply;"></div>
+  <div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(235,94,40,0.95) 0%, rgba(235,94,40,0.9) 70%, rgba(235,94,40,0.95) 100%);"></div>
+  <div class="max-w-5xl mx-auto relative z-10">
+    <h2 class="font-body text-3xl lg:text-5xl text-white mb-4" style="letter-spacing: -0.03em; line-height: 1.05;"><span class="font-light">As fases do seu</span> <span class="font-black">desenvolvimento comercial</span></h2>
+    <p class="text-white/90 text-lg mb-12 max-w-3xl">A Ciência da Alta Conversão não é uma coleção de dicas soltas. É um processo estruturado que começa na sua cabeça, passa pela sua operação e termina no fechamento. Cada fase tem uma função e uma ordem, e essa ordem importa.</p>
+
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-4 lg:gap-3">
+      <!-- Phase 1 -->
+      <div class="phase-card">
+        <div class="w-12 h-12 rounded-full border-2 border-white flex items-center justify-center text-white font-bold text-lg mb-4">1</div>
+        <h3 class="text-white font-body font-bold text-lg mb-2">Mental</h3>
+        <p class="text-white/80 text-sm" style="line-height: 1.6;">Antes de qualquer técnica, existe o que acontece dentro de você. Emoções, comportamentos e ciclos que sabotam a performance sem que você perceba.</p>
+      </div>
+      <!-- Phase 2 -->
+      <div class="phase-card">
+        <div class="w-12 h-12 rounded-full border-2 border-white flex items-center justify-center text-white font-bold text-lg mb-4">2</div>
+        <h3 class="text-white font-body font-bold text-lg mb-2">Arquitetura</h3>
+        <p class="text-white/80 text-sm" style="line-height: 1.6;">Você vai entender como uma operação comercial funciona de verdade, seja você empresário, prestador de serviço ou vendedor. Você vai absorver toda a lógica da rotina e a estrutura que sustenta pessoas que vendem em alta performance.</p>
+      </div>
+      <!-- Phase 3 -->
+      <div class="phase-card">
+        <div class="w-12 h-12 rounded-full border-2 border-white flex items-center justify-center text-white font-bold text-lg mb-4">3</div>
+        <h3 class="text-white font-body font-bold text-lg mb-2">Fundamento</h3>
+        <p class="text-white/80 text-sm" style="line-height: 1.6;">A sequência lógica da conversa de vendas. A ordem que a maioria inverte e por isso perde vendas.</p>
+      </div>
+      <!-- Phase 4 -->
+      <div class="phase-card">
+        <div class="w-12 h-12 rounded-full border-2 border-white flex items-center justify-center text-white font-bold text-lg mb-4">4</div>
+        <h3 class="text-white font-body font-bold text-lg mb-2">Metodologia e Frameworks</h3>
+        <p class="text-white/80 text-sm" style="line-height: 1.6;">Os métodos que existem SPIN, BANT etc., como aplicar cada um e como criar o seu próprio framework pro seu nicho específico.</p>
+      </div>
+      <!-- Phase 5 -->
+      <div class="phase-card">
+        <div class="w-12 h-12 rounded-full border-2 border-white flex items-center justify-center text-white font-bold text-lg mb-4">5</div>
+        <h3 class="text-white font-body font-bold text-lg mb-2">Conversão</h3>
+        <p class="text-white/80 text-sm" style="line-height: 1.6;">Objeções, métricas e fechamento. O que fazer quando o cliente empurra de volta, os números que você precisa acompanhar e as formas reais de conduzir o cliente até o sim.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Blend 3→4: Orange → warm dark -->
+<div class="blend" style="background: linear-gradient(to bottom, #eb5e28, #8a3010, #3d1a0a, #2c2324);"></div>
+
+<!-- ===== SECTION 4: MODULES ===== -->
+<section class="bg-brand-dark py-16 lg:py-28 px-6">
+  <div class="max-w-5xl mx-auto">
+    <h2 class="font-body text-3xl lg:text-5xl text-white mb-4" style="letter-spacing: -0.03em; line-height: 1.05;"><span class="font-black">Dez módulos.</span> <span class="font-light">Do mental ao fechamento.</span></h2>
+    <p class="text-brand-warm text-lg mb-12 max-w-2xl">Cada módulo constrói sobre o anterior. Nada é solto, tudo conecta.</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="module-card">
+        <h3 class="font-body font-semibold text-lg text-white mb-2">Arquitetura Mental</h3>
+        <p class="text-brand-warm text-sm" style="line-height: 1.6;">Conceitos de Terapia cognitivo-comportamental, ciclo circadiano, emoções e comportamentos. O que acontece dentro de você impacta diretamente o que acontece na sua venda.</p>
+      </div>
+      <div class="module-card">
+        <h3 class="font-body font-semibold text-lg text-white mb-2">Arquitetura Comercial</h3>
+        <p class="text-brand-warm text-sm" style="line-height: 1.6;">Rotinas e especialidades da área comercial: BDR, SDR, Closer etc. Você entende onde está, qual é o seu papel e como uma operação comercial funciona de verdade.</p>
+      </div>
+      <div class="module-card">
+        <h3 class="font-body font-semibold text-lg text-white mb-2">Fundamento Comercial</h3>
+        <p class="text-brand-warm text-sm" style="line-height: 1.6;">A sequência lógica da venda. A ordem da conversa importa mais do que qualquer script.</p>
+      </div>
+      <div class="module-card">
+        <h3 class="font-body font-semibold text-lg text-white mb-2">Breakdown de Frameworks Comerciais</h3>
+        <p class="text-brand-warm text-sm" style="line-height: 1.6;">Modelos reais de vendas desmontados pra você entender a lógica e criar o seu próprio framework adaptado ao seu nicho.</p>
+      </div>
+      <div class="module-card">
+        <h3 class="font-body font-semibold text-lg text-white mb-2">Arquitetura Comportamental do Consumidor</h3>
+        <p class="text-brand-warm text-sm" style="line-height: 1.6;">Artigos, livros e tudo que absorvi sobre economia comportamental e psicologia do consumidor organizado de um jeito que você aplica direto na operação.</p>
+      </div>
+      <div class="module-card">
+        <h3 class="font-body font-semibold text-lg text-white mb-2">Metodologia de Vendas</h3>
+        <p class="text-brand-warm text-sm" style="line-height: 1.6;">Além do óbvio. SPIN, BANT e GPCT você provavelmente já ouviu falar, mas aqui você também aprende CHAMP, MEDDIC, SNAP e outros métodos que a maioria dos cursos nem menciona.</p>
+      </div>
+      <div class="module-card">
+        <h3 class="font-body font-semibold text-lg text-white mb-2">Frameworks Comerciais</h3>
+        <p class="text-brand-warm text-sm" style="line-height: 1.6;">Os frameworks que já existem e funcionam. Modelos usados por grandes companhias, analisados pra você saber quando e como aplicar cada um.</p>
+      </div>
+      <div class="module-card">
+        <h3 class="font-body font-semibold text-lg text-white mb-2">Objeções</h3>
+        <p class="text-brand-warm text-sm" style="line-height: 1.6;">Como reverter as principais objeções sem soar desesperado, sem ceder no preço e sem perder o cliente no último metro.</p>
+      </div>
+      <div class="module-card">
+        <h3 class="font-body font-semibold text-lg text-white mb-2">Métricas e Referências</h3>
+        <p class="text-brand-warm text-sm" style="line-height: 1.6;">Os números que você precisa acompanhar e o que eles estão te dizendo sobre onde sua operação está travando.</p>
+      </div>
+      <div class="module-card">
+        <h3 class="font-body font-semibold text-lg text-white mb-2">Frameworks de Fechamento</h3>
+        <p class="text-brand-warm text-sm" style="line-height: 1.6;">Formas reais de realizar o fechamento sem pressão excessiva e sem queimar a relação com o cliente na reta final.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 5: AUTHORITY ===== -->
+<section class="bg-brand-dark py-16 lg:py-28 px-6 relative overflow-hidden">
+  <!-- Decorative bg2 -->
+  <div class="absolute right-0 top-0 bottom-0 w-2/3 hidden lg:block" style="opacity: 0.25;">
+    <img src="elementos%20logo/bg2.jpg" alt="" class="w-full h-full object-cover" style="mask-image: linear-gradient(to right, transparent 0%, black 40%); -webkit-mask-image: linear-gradient(to right, transparent 0%, black 40%);">
+  </div>
+
+  <div class="max-w-5xl mx-auto relative z-10">
+    <h2 class="font-body text-3xl lg:text-5xl text-white mb-12" style="letter-spacing: -0.03em; line-height: 1.05;"><span class="font-light">Quem fala isso</span> <span class="font-black">vendeu de verdade</span></h2>
+
+    <div class="flex flex-col lg:flex-row gap-12 lg:gap-16 items-start">
+      <!-- Left: Stats + Bio -->
+      <div class="flex-1">
+        <div class="grid grid-cols-2 gap-6 mb-10">
+          <div>
+            <div class="stat-number">R$ 15M+</div>
+            <p class="text-brand-warm text-sm mt-1">Total vendido</p>
+          </div>
+          <div>
+            <div class="stat-number">1.000+</div>
+            <p class="text-brand-warm text-sm mt-1">Vendas individuais</p>
+          </div>
+          <div>
+            <div class="stat-number">4.000+</div>
+            <p class="text-brand-warm text-sm mt-1">Vendas no time outbound</p>
+          </div>
+          <div>
+            <div class="stat-number">20</div>
+            <p class="text-brand-warm text-sm mt-1">Franquias gerenciadas (V4 Company)</p>
+          </div>
+        </div>
+
+        <p class="text-brand-cream/85 text-base" style="line-height: 1.7;">Ao aplicar meus conhecimentos em vendas tive a oportunidade de trabalhar lado a lado com <span class="text-white font-semibold">Flávio Augusto</span> e <span class="text-white font-semibold">Caio Carneiro</span>. Minhas técnicas me levaram a ser gerente regional de 20 franquias da <span class="text-brand-orange font-semibold">V4 Company</span> e a liderar um time que fechou mais de 4.000 vendas somente por prospecção fria. Sou de <span class="text-brand-orange">Belém do Pará</span> e não me apresento como professor de vendas porque nunca fui, sou um vendedor que decidiu mostrar o que funciona de verdade, porque a maioria do que se ensina por aí nunca foi testado no campo ou não tem embasamento científico.</p>
+      </div>
+
+      <!-- Right: Photo -->
+      <div class="flex-shrink-0 mx-auto lg:mx-0">
+        <img src="Imagens/eu.jpg" alt="Rinoel — Vendedor e criador da Ciência da Alta Conversão" class="w-64 lg:w-80 rounded-2xl object-cover" style="aspect-ratio: 3/4; box-shadow: 0 16px 48px rgba(235,94,40,0.3);" loading="lazy">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Blend 5→6: Dark → warm → Orange -->
+<div class="blend" style="background: linear-gradient(to bottom, #2c2324, #3d1a0a, #8a3010, #eb5e28);"></div>
+
+<!-- ===== SECTION 6: FOR WHOM ===== -->
+<section class="relative py-16 lg:py-28 px-6 overflow-hidden" style="background: #eb5e28;">
+  <!-- bg3 subtle texture -->
+  <div class="absolute inset-0" style="opacity: 0.12;">
+    <img src="elementos%20logo/bg3.jpg" alt="" class="w-full h-full object-cover">
+  </div>
+  <div class="max-w-3xl mx-auto text-center relative z-10">
+    <h2 class="font-body text-3xl lg:text-5xl text-white mb-8" style="letter-spacing: -0.03em; line-height: 1.05;"><span class="font-light">Se você conversa com o cliente</span> <span class="font-black">antes de receber, é pra você</span></h2>
+
+    <p class="text-white/90 text-lg" style="line-height: 1.8;">Não importa se você é <span class="prof-pill">médico</span> fechando paciente particular, <span class="prof-pill">psicólogo ou terapeuta</span> atendendo fora do plano, <span class="prof-pill">engenheiro</span> vendendo projeto, <span class="prof-pill">vendedor de placa solar</span>, <span class="prof-pill">prestador de serviço</span> de qualquer área ou <span class="prof-pill">empreendedor</span> que faz a própria venda e quer parar de perder pra concorrente mais barato. O que muda de mercado pra mercado é o produto, a lógica da conversa é sempre a mesma e é exatamente isso que a Ciência da Alta Conversão ensina.</p>
+  </div>
+</section>
+
+<!-- Blend 6→7: Orange → warm → Dark -->
+<div class="blend" style="background: linear-gradient(to bottom, #eb5e28, #8a3010, #3d1a0a, #2c2324);"></div>
+
+<!-- ===== SECTION 7: TESTIMONIALS ===== -->
+<section class="bg-brand-dark py-16 lg:py-28 px-6">
+  <div class="max-w-5xl mx-auto">
+    <h2 class="font-body text-3xl lg:text-5xl text-white mb-10" style="letter-spacing: -0.03em; line-height: 1.05;"><span class="font-black">Depoimentos de clientes verdadeiros</span> <span class="font-light">(Não são mentirosos!)</span></h2>
+
+    <!-- Video 1 - Standard 16:9 -->
+    <div class="mb-6">
+      <div class="video-facade mx-auto" style="aspect-ratio: 16/9; max-width: 720px;" data-yt="i9MFJPwIuX4">
+        <img src="https://img.youtube.com/vi/i9MFJPwIuX4/hqdefault.jpg" alt="Depoimento Alexandre Kzam" loading="lazy">
+        <div class="play-btn">
+          <svg viewBox="0 0 24 24" fill="white"><polygon points="6,3 20,12 6,21"/></svg>
+        </div>
+      </div>
+      <p class="text-center mt-3 text-white font-semibold">Alexandre Kzam <span class="text-brand-warm font-normal">— Terapeuta — @Alexandre.Kzam</span></p>
+    </div>
+
+    <!-- Videos 2-4 - Shorts (vertical) -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
+      <div>
+        <div class="video-facade" style="aspect-ratio: 9/16; max-height: 480px;" data-yt="e4uZkgXBqO8">
+          <img src="https://img.youtube.com/vi/e4uZkgXBqO8/hqdefault.jpg" alt="Depoimento Henrique Alcântara" loading="lazy">
+          <div class="play-btn">
+            <svg viewBox="0 0 24 24" fill="white"><polygon points="6,3 20,12 6,21"/></svg>
+          </div>
+        </div>
+        <p class="text-center mt-3 text-white font-semibold text-sm">Henrique Alcântara <span class="text-brand-warm font-normal">— Advogado</span></p>
+      </div>
+      <div>
+        <div class="video-facade" style="aspect-ratio: 9/16; max-height: 480px;" data-yt="kfKYXrLNP-M">
+          <img src="https://img.youtube.com/vi/kfKYXrLNP-M/hqdefault.jpg" alt="Depoimento Leonardo Duarte" loading="lazy">
+          <div class="play-btn">
+            <svg viewBox="0 0 24 24" fill="white"><polygon points="6,3 20,12 6,21"/></svg>
+          </div>
+        </div>
+        <p class="text-center mt-3 text-white font-semibold text-sm">Leonardo Duarte <span class="text-brand-warm font-normal">— Gestor Comercial</span></p>
+      </div>
+      <div>
+        <div class="video-facade" style="aspect-ratio: 9/16; max-height: 480px;" data-yt="kZjoNLoIch4">
+          <img src="https://img.youtube.com/vi/kZjoNLoIch4/hqdefault.jpg" alt="Depoimento Orlando Ribeiro" loading="lazy">
+          <div class="play-btn">
+            <svg viewBox="0 0 24 24" fill="white"><polygon points="6,3 20,12 6,21"/></svg>
+          </div>
+        </div>
+        <p class="text-center mt-3 text-white font-semibold text-sm">Orlando Ribeiro <span class="text-brand-warm font-normal">— Supervisor comercial</span></p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== SECTION 8: OFFER ===== -->
+<section class="bg-brand-dark py-16 lg:py-28 px-6 relative overflow-hidden" id="comprar">
+  <!-- bg3 background -->
+  <div class="absolute inset-0">
+    <img src="elementos%20logo/bg3.jpg" alt="" class="w-full h-full object-cover" style="opacity: 0.15;">
+  </div>
+  <div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(44,35,36,0.85) 0%, rgba(44,35,36,0.7) 50%, rgba(44,35,36,0.9) 100%);"></div>
+
+  <div class="max-w-xl mx-auto relative z-10">
+    <h2 class="font-body text-3xl lg:text-5xl text-white mb-8 text-center" style="letter-spacing: -0.03em; line-height: 1.05;"><span class="font-black">Ciência da Alta Conversão</span> <span class="font-light">— acesso completo</span></h2>
+
+    <div class="rounded-2xl p-8 lg:p-10" style="background: rgba(255,255,255,0.06); border-top: 4px solid #eb5e28; box-shadow: 0 4px 8px rgba(0,0,0,0.2), 0 16px 48px rgba(235,94,40,0.15);">
+      <ul class="space-y-4 mb-8">
+        <li class="flex items-center gap-3 pb-4" style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <svg class="w-5 h-5 flex-shrink-0 text-brand-orange" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          <span class="text-white font-medium">Arquitetura Mental</span>
+        </li>
+        <li class="flex items-center gap-3 pb-4" style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <svg class="w-5 h-5 flex-shrink-0 text-brand-orange" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          <span class="text-white font-medium">Arquitetura Comercial</span>
+        </li>
+        <li class="flex items-center gap-3 pb-4" style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <svg class="w-5 h-5 flex-shrink-0 text-brand-orange" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          <span class="text-white font-medium">Fundamento Comercial</span>
+        </li>
+        <li class="flex items-center gap-3 pb-4" style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <svg class="w-5 h-5 flex-shrink-0 text-brand-orange" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          <span class="text-white font-medium">Como criar Frameworks Comerciais</span>
+        </li>
+        <li class="flex items-center gap-3 pb-4" style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <svg class="w-5 h-5 flex-shrink-0 text-brand-orange" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          <span class="text-white font-medium">Arquitetura Comportamental do Consumidor</span>
+        </li>
+        <li class="flex items-center gap-3 pb-4" style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <svg class="w-5 h-5 flex-shrink-0 text-brand-orange" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          <span class="text-white font-medium">Metodologia de Vendas</span>
+        </li>
+        <li class="flex items-center gap-3 pb-4" style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <svg class="w-5 h-5 flex-shrink-0 text-brand-orange" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          <span class="text-white font-medium">Frameworks Comerciais</span>
+        </li>
+        <li class="flex items-center gap-3 pb-4" style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <svg class="w-5 h-5 flex-shrink-0 text-brand-orange" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          <span class="text-white font-medium">Objeções</span>
+        </li>
+        <li class="flex items-center gap-3 pb-4" style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <svg class="w-5 h-5 flex-shrink-0 text-brand-orange" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          <span class="text-white font-medium">Métricas Básicas e Referências</span>
+        </li>
+        <li class="flex items-center gap-3 pb-4" style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <svg class="w-5 h-5 flex-shrink-0 text-brand-orange" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          <span class="text-white font-medium">Frameworks de Fechamento</span>
+        </li>
+        <li class="flex items-center gap-3">
+          <svg class="w-5 h-5 flex-shrink-0 text-brand-orange" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          <span class="text-white font-medium">Certificado</span>
+        </li>
+      </ul>
+
+      <a href="#comprar" class="cta-primary w-full justify-center text-base sm:text-lg mb-4">
+        Quero entrar na Ciência da Alta Conversão
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- Blend 8→9: Dark → warm → Orange -->
+<div class="blend" style="background: linear-gradient(to bottom, #2c2324, #3d1a0a, #8a3010, #eb5e28);"></div>
+
+<!-- ===== SECTION 9: FAQ ===== -->
+<section class="bg-brand-orange py-16 lg:py-28 px-6">
+  <div class="max-w-2xl mx-auto">
+    <h2 class="font-body text-3xl lg:text-5xl text-white mb-10" style="letter-spacing: -0.03em; line-height: 1.05;"><span class="font-light">Perguntas</span> <span class="font-black">frequentes</span></h2>
+
+    <div class="space-y-0">
+      <details class="border-b border-white/20">
+        <summary class="py-5 flex items-center justify-between text-white font-semibold text-base lg:text-lg">
+          <span>Para quem é a Ciência da Alta Conversão?</span>
+        </summary>
+        <div class="pb-5 text-white/85 text-base" style="line-height: 1.7;">Para quem precisa conversar com o cliente antes de vender. Médico, psicólogo, engenheiro, vendedor de placa solar, prestador de serviço de qualquer área ou empreendedor que faz a própria venda. Se você fala com alguém antes de receber o dinheiro, o método se aplica porque o que muda de mercado pra mercado é o produto, não a lógica da conversa.</div>
+      </details>
+
+      <details class="border-b border-white/20">
+        <summary class="py-5 flex items-center justify-between text-white font-semibold text-base lg:text-lg">
+          <span>Preciso ter experiência em vendas?</span>
+        </summary>
+        <div class="pb-5 text-white/85 text-base" style="line-height: 1.7;">Não. Quem nunca vendeu vai entender o processo do zero e quem já vende vai identificar exatamente onde está errando.</div>
+      </details>
+
+      <details class="border-b border-white/20">
+        <summary class="py-5 flex items-center justify-between text-white font-semibold text-base lg:text-lg">
+          <span>O conteúdo é muito técnico?</span>
+        </summary>
+        <div class="pb-5 text-white/85 text-base" style="line-height: 1.7;">Nada de jargão sem explicação. Tudo que está no curso eu usei e se não consegui aplicar no campo, não ensino.</div>
+      </details>
+
+      <details class="border-b border-white/20">
+        <summary class="py-5 flex items-center justify-between text-white font-semibold text-base lg:text-lg">
+          <span>Em quanto tempo vejo resultado?</span>
+        </summary>
+        <div class="pb-5 text-white/85 text-base" style="line-height: 1.7;">Quem aplica os fundamentos do módulo Fundamento Comercial já na semana seguinte começa a perceber mudança nas conversas porque resultado em vendas é consequência de comportamento mudado e o comportamento muda quando o fundamento é entendido.</div>
+      </details>
+
+      <details class="border-b border-white/20">
+        <summary class="py-5 flex items-center justify-between text-white font-semibold text-base lg:text-lg">
+          <span>Como funciona o acesso?</span>
+        </summary>
+        <div class="pb-5 text-white/85 text-base" style="line-height: 1.7;">100% online, no seu ritmo e sem prazo de expiração.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 10: FINAL CTA ===== -->
+<section class="py-20 lg:py-28 px-6 relative overflow-hidden">
+  <!-- Rich gradient: orange top → deep warm → black bottom -->
+  <div class="absolute inset-0" style="background: linear-gradient(180deg, #eb5e28 0%, #d4520f 20%, #8a3010 50%, #3d1a0a 75%, #1a0a04 100%);"></div>
+  <div class="absolute inset-0" style="background: radial-gradient(ellipse at 50% 20%, rgba(255,120,40,0.3) 0%, transparent 50%);"></div>
+  <div class="max-w-2xl mx-auto text-center relative z-10">
+    <h2 class="font-body text-3xl lg:text-6xl text-white mb-6" style="letter-spacing: -0.04em; line-height: 1.0;"><span class="font-light">A maioria vai continuar</span><br><span class="font-black">vendendo no improviso.</span></h2>
+
+    <p class="text-white/90 text-lg mb-10" style="line-height: 1.7; max-width: 560px; margin-left: auto; margin-right: auto;">Os diferentes e ousados vão entender o processo, dominar a conversa e fechar mais sem depender de sorte, sem gastar com propaganda e sem abaixar o preço pra fechar. Você escolhe qual lado quer estar.</p>
+
+    <a href="#comprar" class="cta-inverted text-base sm:text-lg w-full sm:w-auto justify-center">
+      Quero entrar na Ciência da Alta Conversão
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+    </a>
+
+    <div class="mt-16 pt-8" style="border-top: 1px solid rgba(255,255,255,0.2);">
+      <img src="elementos%20logo/logo-white.svg" alt="BRADE" class="h-20 lg:h-24 mx-auto mb-3" style="width:auto;">
+      <p class="text-white/70 text-sm tracking-widest uppercase font-medium">Seja diferente da maioria.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== JS ===== -->
+<script>
+  // YouTube facade — click to load
+  document.querySelectorAll('[data-yt]').forEach(el => {
+    el.addEventListener('click', function() {
+      const id = this.dataset.yt;
+      const iframe = document.createElement('iframe');
+      iframe.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0&controls=1';
+      iframe.allow = 'autoplay; encrypted-media; fullscreen';
+      iframe.allowFullscreen = true;
+      iframe.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:12px;';
+      this.style.position = 'relative';
+      this.innerHTML = '';
+      this.style.cursor = 'default';
+      this.classList.remove('video-facade');
+      this.appendChild(iframe);
+    }, { once: true });
+  });
+
+  // Navbar scroll effect
+  const nav = document.getElementById('navbar');
+  const observer = new IntersectionObserver(([e]) => {
+    nav.classList.toggle('scrolled', !e.isIntersecting);
+  }, { threshold: 0.1 });
+  observer.observe(document.querySelector('section'));
+</script>
+
+</body>
+</html>
