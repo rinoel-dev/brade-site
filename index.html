@@ -159,11 +159,17 @@
     .nav-bar {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       padding: 16px 24px;
-      padding-top: max(16px, env(safe-area-inset-top));
-      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      padding-top: calc(env(safe-area-inset-top, 0px) + 16px);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease, backdrop-filter 0.3s ease;
+    }
+    .nav-bar::before {
+      content: ''; position: absolute; top: -50px; left: 0; right: 0; bottom: 0;
+      z-index: -1; transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
+    }
+    .nav-bar.scrolled::before {
+      background: rgba(0,0,0,0.9); backdrop-filter: blur(12px);
     }
     .nav-bar.scrolled {
-      background: rgba(0,0,0,0.9); backdrop-filter: blur(12px);
       box-shadow: 0 1px 0 rgba(255,255,255,0.05);
     }
   </style>
