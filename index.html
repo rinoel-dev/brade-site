@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Ciência da Alta Conversão — BRADE</title>
   <meta name="description" content="Aprenda a ciência por trás das vendas de alta conversão. Do mental ao fechamento, um processo estruturado para você vender mais.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -31,7 +31,8 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
-    body { font-family: 'Inter', sans-serif; color: #2c2324; margin: 0; -webkit-font-smoothing: antialiased; }
+    html, body { margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; color: #2c2324; background: #000; -webkit-font-smoothing: antialiased; }
     h1, h2, h3, h4 { font-family: 'Inter', sans-serif; letter-spacing: -0.03em; line-height: 1.1; }
     p { line-height: 1.7; }
 
@@ -158,6 +159,7 @@
     .nav-bar {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       padding: 16px 24px;
+      padding-top: max(16px, env(safe-area-inset-top));
       transition: background-color 0.3s ease, box-shadow 0.3s ease;
     }
     .nav-bar.scrolled {
