@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Slides sincronizados</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --surface: #161616;
+      --border: #262626;
+      --text: #f5f5f5;
+      --muted: #737373;
+      --accent: #fbbf24;
+      --font-display: 'Fraunces', serif;
+      --font-body: 'DM Sans', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      overflow: hidden;
+    }
+    .setup {
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 12vh 24px 48px;
+      overflow-y: auto;
+      max-height: 100vh;
+    }
+    .setup .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+    .setup h1 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 56px;
+      line-height: 1.0;
+      letter-spacing: -0.025em;
+      margin-bottom: 16px;
+    }
+    .setup h1 em {
+      font-style: italic;
+      font-weight: 400;
+      color: var(--accent);
+    }
+    .setup .lede {
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.55;
+      margin-bottom: 36px;
+    }
+    .setup .field { margin-bottom: 20px; }
+    .setup label {
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-family: var(--font-mono);
+    }
+    .setup input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 14px 16px;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      border-radius: 6px;
+      transition: border-color 0.2s;
+    }
+    .setup input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .setup .hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 6px;
+      font-family: var(--font-mono);
+    }
+    .btn {
+      background: var(--accent);
+      color: #0a0a0a;
+      border: none;
+      padding: 14px 22px;
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: transform 0.1s, opacity 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn:hover { opacity: 0.92; }
+    .btn:active { transform: scale(0.98); }
+    .presenter-app {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      height: 100vh;
+    }
+    .topbar {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .brand {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 18px;
+      color: var(--accent);
+      letter-spacing: -0.01em;
+      flex-shrink: 0;
+    }
+    .share-box {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 6px 6px 6px 14px;
+      border-radius: 8px;
+      max-width: 720px;
+    }
+    .share-box .label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      flex-shrink: 0;
+    }
+    .share-box .url {
+      flex: 1;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .share-box button {
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 7px 12px;
+      border-radius: 5px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+    .share-box button:hover {
+      background: var(--accent);
+      color: #0a0a0a;
+      border-color: var(--accent);
+    }
+    .stage {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow: hidden;
+      background: #050505;
+      position: relative;
+    }
+    .slide-canvas-wrapper {
+      max-width: 100%;
+      max-height: 100%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      border-radius: 4px;
+      overflow: hidden;
+      background: #fff;
+      line-height: 0;
+    }
+    canvas {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+    .controls {
+      padding: 18px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+    }
+    .nav-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+    .nav-btn:hover:not(:disabled) {
+      background: var(--accent);
+      color: #0a0a0a;
+      border-color: var(--accent);
+    }
+    .nav-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+    .counter {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--muted);
+      min-width: 80px;
+      text-align: center;
+    }
+    .counter strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+    .viewer-app {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: #050505;
+      padding: 16px;
+      position: relative;
+    }
+    .viewer-app .slide-canvas-wrapper {
+      box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+    }
+    .viewer-status {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 12px;
+      background: rgba(22,22,22,0.85);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .pulse {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #22c55e;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    .pulse.disconnected {
+      background: #ef4444;
+      animation: none;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5); }
+      70% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+    }
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      font-family: var(--font-mono);
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--accent);
+      color: #0a0a0a;
+      padding: 12px 22px;
+      border-radius: 100px;
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 14px;
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      pointer-events: none;
+      z-index: 1000;
+      box-shadow: 0 10px 40px rgba(251, 191, 36, 0.3);
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    @media (max-width: 720px) {
+      .setup h1 { font-size: 42px; }
+      .topbar { flex-direction: column; gap: 10px; align-items: stretch; padding: 12px; }
+      .share-box { max-width: none; }
+      .brand { text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <div id="app"><div class="loading">Carregando...</div></div>
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const NTFY_SERVER = 'https://ntfy.sh';
+    const TOPIC_PREFIX = 'brade-slides-sync';
+    const DEFAULT_PDF = 'slides.pdf';
+
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    const params = new URLSearchParams(window.location.search);
+    const mode = params.get('mode');
+    const pdfUrl = params.get('pdf') || DEFAULT_PDF;
+    let session = params.get('session');
+
+    let pdfDoc = null;
+    let currentPage = 1;
+    let totalPages = 0;
+    let isRendering = false;
+    let pendingPage = null;
+    let eventSource = null;
+    let resizeTimer = null;
+
+    function generateSessionId() {
+      if (window.crypto && crypto.randomUUID) {
+        return crypto.randomUUID().replace(/-/g, '').substring(0, 16);
+      }
+      return Math.random().toString(36).substring(2, 12) + Date.now().toString(36);
+    }
+
+    function getTopic() { return `${TOPIC_PREFIX}-${session}`; }
+
+    function buildViewerUrl() {
+      const url = new URL(window.location.href);
+      url.searchParams.set('mode', 'viewer');
+      url.searchParams.set('session', session);
+      url.searchParams.set('pdf', pdfUrl);
+      return url.toString();
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 1800);
+    }
+
+    async function copyToClipboard(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast('Link copiado');
+      } catch (err) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); showToast('Link copiado'); } catch (e) {}
+        document.body.removeChild(ta);
+      }
+    }
+
+    async function loadPdf() {
+      pdfDoc = await pdfjsLib.getDocument(pdfUrl).promise;
+      totalPages = pdfDoc.numPages;
+    }
+
+    async function renderPage(pageNum) {
+      if (!pdfDoc) return;
+      if (pageNum < 1 || pageNum > totalPages) return;
+      if (isRendering) { pendingPage = pageNum; return; }
+
+      isRendering = true;
+      currentPage = pageNum;
+
+      const canvas = document.getElementById('pdf-canvas');
+      if (!canvas) { isRendering = false; return; }
+
+      const page = await pdfDoc.getPage(pageNum);
+      const stage = canvas.parentElement.parentElement;
+      const stageRect = stage.getBoundingClientRect();
+      const padding = 40;
+      const availW = Math.max(200, stageRect.width - padding);
+      const availH = Math.max(200, stageRect.height - padding);
+
+      const baseViewport = page.getViewport({ scale: 1 });
+      const fitScale = Math.min(availW / baseViewport.width, availH / baseViewport.height);
+      const dpr = window.devicePixelRatio || 1;
+      const viewport = page.getViewport({ scale: fitScale * dpr });
+
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      canvas.style.width = (viewport.width / dpr) + 'px';
+      canvas.style.height = (viewport.height / dpr) + 'px';
+
+      try {
+        await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
+      } catch (e) {}
+
+      const counter = document.getElementById('counter');
+      if (counter) counter.innerHTML = `<strong>${currentPage}</strong> / ${totalPages}`;
+
+      const prevBtn = document.getElementById('prev-btn');
+      const nextBtn = document.getElementById('next-btn');
+      if (prevBtn) prevBtn.disabled = currentPage <= 1;
+      if (nextBtn) nextBtn.disabled = currentPage >= totalPages;
+
+      isRendering = false;
+
+      if (pendingPage !== null && pendingPage !== currentPage) {
+        const next = pendingPage;
+        pendingPage = null;
+        renderPage(next);
+      }
+    }
+
+    function handleResize() {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => renderPage(currentPage), 150);
+    }
+
+    async function broadcastSlide(pageNum) {
+      try {
+        await fetch(`${NTFY_SERVER}/${getTopic()}`, {
+          method: 'POST',
+          body: JSON.stringify({ page: pageNum, t: Date.now() })
+        });
+      } catch (err) { console.error('Broadcast failed:', err); }
+    }
+
+    function subscribeToSync(onMessage, onStatusChange) {
+      if (eventSource) eventSource.close();
+      eventSource = new EventSource(`${NTFY_SERVER}/${getTopic()}/sse`);
+      eventSource.onopen = () => onStatusChange && onStatusChange('connected');
+      eventSource.onmessage = (e) => {
+        try {
+          const data = JSON.parse(e.data);
+          if (data.event === 'message' && data.message) {
+            const payload = JSON.parse(data.message);
+            if (payload.page) onMessage(payload.page);
+          }
+        } catch (err) {}
+      };
+      eventSource.onerror = () => onStatusChange && onStatusChange('disconnected');
+    }
+
+    async function fetchInitialState() {
+      try {
+        const res = await fetch(`${NTFY_SERVER}/${getTopic()}/json?poll=1&since=12h`);
+        if (!res.ok) return null;
+        const text = await res.text();
+        if (!text.trim()) return null;
+        const lines = text.trim().split('\n').filter(Boolean);
+        if (lines.length === 0) return null;
+        const last = JSON.parse(lines[lines.length - 1]);
+        if (last.event === 'message' && last.message) {
+          const payload = JSON.parse(last.message);
+          return payload.page || null;
+        }
+      } catch (err) {}
+      return null;
+    }
+
+    function renderSetup() {
+      document.getElementById('app').innerHTML = `
+        <div class="setup">
+          <div class="eyebrow">Slides ao vivo</div>
+          <h1>Apresente <em>sem</em> compartilhar tela.</h1>
+          <p class="lede">Hospede seu PDF, gere um link e envie pra outra pessoa. Você passa os slides, ela vê passar — em tempo real, no navegador, sem instalar nada.</p>
+          <div class="field">
+            <label>Arquivo PDF</label>
+            <input id="pdf-input" type="text" value="${pdfUrl}" placeholder="slides.pdf" />
+            <div class="hint">Caminho relativo (ex: slides.pdf) ou URL completa</div>
+          </div>
+          <button class="btn" id="start-btn">Iniciar apresentação →</button>
+        </div>
+      `;
+      document.getElementById('start-btn').addEventListener('click', () => {
+        const newPdf = document.getElementById('pdf-input').value.trim();
+        if (!newPdf) return;
+        const newSession = generateSessionId();
+        const url = new URL(window.location.href);
+        url.searchParams.set('mode', 'presenter');
+        url.searchParams.set('session', newSession);
+        url.searchParams.set('pdf', newPdf);
+        window.location.href = url.toString();
+      });
+      document.getElementById('pdf-input').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') document.getElementById('start-btn').click();
+      });
+    }
+
+    function showError(msg) {
+      document.getElementById('app').innerHTML = `
+        <div class="setup">
+          <div class="eyebrow" style="color:#ef4444">Erro</div>
+          <h1>Não consegui <em>carregar</em> o PDF.</h1>
+          <p class="lede">${msg}</p>
+          <button class="btn" onclick="window.location.search=''">Voltar</button>
+        </div>
+      `;
+    }
+
+    async function renderPresenter() {
+      document.getElementById('app').innerHTML = `
+        <div class="presenter-app">
+          <div class="topbar">
+            <div class="brand">brade.slides</div>
+            <div class="share-box">
+              <span class="label">Link</span>
+              <span class="url" id="viewer-url">${buildViewerUrl()}</span>
+              <button id="copy-btn">Copiar</button>
+              <button id="open-btn">Abrir</button>
+            </div>
+          </div>
+          <div class="stage">
+            <div class="slide-canvas-wrapper"><canvas id="pdf-canvas"></canvas></div>
+          </div>
+          <div class="controls">
+            <button class="nav-btn" id="prev-btn" aria-label="Anterior">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <div class="counter" id="counter">— / —</div>
+            <button class="nav-btn" id="next-btn" aria-label="Próximo">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+          </div>
+        </div>
+      `;
+      document.getElementById('copy-btn').addEventListener('click', () => copyToClipboard(buildViewerUrl()));
+      document.getElementById('open-btn').addEventListener('click', () => window.open(buildViewerUrl(), '_blank'));
+      document.getElementById('prev-btn').addEventListener('click', () => goTo(currentPage - 1));
+      document.getElementById('next-btn').addEventListener('click', () => goTo(currentPage + 1));
+      document.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT') return;
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+          e.preventDefault(); goTo(currentPage + 1);
+        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+          e.preventDefault(); goTo(currentPage - 1);
+        }
+      });
+      window.addEventListener('resize', handleResize);
+      try {
+        await loadPdf();
+        await renderPage(1);
+        broadcastSlide(1);
+      } catch (err) {
+        showError(`Verifica se o arquivo "${pdfUrl}" está no mesmo lugar que o index.html. Detalhe: ${err.message}`);
+      }
+    }
+
+    function goTo(pageNum) {
+      if (pageNum < 1 || pageNum > totalPages) return;
+      renderPage(pageNum);
+      broadcastSlide(pageNum);
+    }
+
+    async function renderViewer() {
+      document.getElementById('app').innerHTML = `
+        <div class="viewer-app">
+          <div class="viewer-status">
+            <div class="pulse" id="status-pulse"></div>
+            <span id="status-text">Conectando</span>
+          </div>
+          <div class="slide-canvas-wrapper"><canvas id="pdf-canvas"></canvas></div>
+        </div>
+      `;
+      window.addEventListener('resize', handleResize);
+      try {
+        await loadPdf();
+        const initialPage = await fetchInitialState();
+        await renderPage(initialPage || 1);
+        subscribeToSync(
+          (pageNum) => renderPage(pageNum),
+          (status) => {
+            const pulse = document.getElementById('status-pulse');
+            const text = document.getElementById('status-text');
+            if (!pulse || !text) return;
+            if (status === 'connected') {
+              pulse.classList.remove('disconnected');
+              text.textContent = 'Ao vivo';
+            } else {
+              pulse.classList.add('disconnected');
+              text.textContent = 'Reconectando';
+            }
+          }
+        );
+      } catch (err) {
+        showError(`Não foi possível carregar a apresentação. Detalhe: ${err.message}`);
+      }
+    }
+
+    if (!mode || !session) renderSetup();
+    else if (mode === 'presenter') renderPresenter();
+    else if (mode === 'viewer') renderViewer();
+    else renderSetup();
+  </script>
+</body>
+</html>
