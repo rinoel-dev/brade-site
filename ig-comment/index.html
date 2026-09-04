@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="pt-BR" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diagnóstico Comercial | BRADE</title>
+<meta name="description" content="Descubra o que está travando suas vendas e como destravar seu processo comercial.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#040408;
+    --text:#f0f0f0;
+    --white:#fff;
+    --muted:#c9c9c9;
+    --accent:#eb5e28;
+    --accent-bright:#FF3E11;
+    --accent-ink:#fff;
+    --line:#272727;
+    --pad-y:56.6px;
+    --maxw:1084px;
+  }
+
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:Inter,system-ui,-apple-system,'Segoe UI',sans-serif;
+    font-size:16px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  img{max-width:100%;display:block}
+
+  .wrap{width:100%;max-width:var(--maxw);margin:0 auto;padding:0 24px}
+
+  h1,h2,h3,p,ul{margin:0}
+  ul{list-style:none;padding:0}
+
+  /* ---------- CTA ---------- */
+  .cta{
+    display:inline-flex;
+    align-items:center;
+    gap:11.32px;
+    padding:11.32px;
+    border-radius:300px;
+    background:rgba(87,87,87,.2);
+    border:1px solid rgba(255,255,255,.07);
+    text-decoration:none;
+    transition:transform .25s ease, background .25s ease;
+  }
+  .cta:hover{transform:translateY(-2px);background:rgba(87,87,87,.32)}
+  .cta__label{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height:45px;
+    padding:0 20px;
+    border-radius:200px;
+    background:linear-gradient(to right,var(--accent),var(--accent-bright));
+    color:var(--accent-ink);
+    font-size:clamp(11.5px,3.2vw,14.5px);
+    font-weight:800;
+    letter-spacing:0;
+    text-transform:uppercase;
+    white-space:nowrap;
+  }
+  .cta__arrow{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:45px;
+    height:45px;
+    flex:0 0 45px;
+    border-radius:200px;
+    background:linear-gradient(to right,var(--accent),var(--accent-bright));
+    color:var(--accent-ink);
+  }
+  .cta__arrow svg{width:18px;height:18px}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    background:radial-gradient(ellipse at 50% 0%,rgba(235,94,40,.12) 0%,transparent 60%),var(--bg);
+    padding:0 24px;
+  }
+  .hero__inner{
+    max-width:var(--maxw);
+    margin:0 auto;
+    padding:28px 0 24px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+  }
+  .hero h1{
+    width:100%;
+    max-width:880px;
+    font-size:32px;
+    line-height:1.25;
+    font-weight:400;
+    color:var(--white);
+    margin-bottom:16px;
+  }
+  .hero__sub{
+    width:100%;
+    max-width:880px;
+    font-size:19.5px;
+    line-height:1.5;
+    font-weight:400;
+    color:var(--muted);
+    margin-bottom:48px;
+  }
+  .video{
+    width:100%;
+    max-width:880px;
+    aspect-ratio:16/9;
+    border-radius:15px;
+    overflow:hidden;
+    background:linear-gradient(45deg,#191919,#262626,#191919);
+    margin-bottom:24px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .video iframe{width:100%;height:100%;border:0;display:block}
+  .video__placeholder{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:12px;
+    color:var(--muted);
+    font-size:14px;
+  }
+  .video__placeholder svg{width:48px;height:48px;color:var(--accent);opacity:.6}
+
+  /* ---------- Pra quem ---------- */
+  .target{background:#010101;padding:40px 24px var(--pad-y)}
+  .target__inner{
+    max-width:760px;
+    margin:0 auto;
+    padding:0 24px;
+  }
+  .target__col{min-width:0}
+  .section-title,
+  .included h2,
+  .method h2,
+  .reviews h2{
+    font-size:40px;
+    line-height:1.2;
+    font-weight:600;
+    letter-spacing:-.02em;
+    color:var(--white);
+  }
+  .section-title{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:40px;
+  }
+  .section-title__mark{
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:1em;
+    height:1em;
+    color:var(--accent);
+  }
+  .section-title__mark svg{width:100%;height:100%}
+  .checklist li{
+    display:flex;
+    align-items:flex-start;
+    gap:16px;
+    margin-bottom:16px;
+    color:var(--white);
+    font-size:16px;
+    line-height:1.5;
+  }
+  .check-box{
+    flex:0 0 34px;
+    width:34px;
+    height:34px;
+    border-radius:8px;
+    border:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:rgba(235,94,40,.6);
+  }
+  .check-box svg{width:18px;height:18px}
+  .target .cta{margin-top:24px}
+
+  /* ---------- O que esta incluso ---------- */
+  .included{
+    margin:0 24px;
+    border-radius:67.92px;
+    background:linear-gradient(-45deg,#000,#181818,#000);
+    overflow:hidden;
+  }
+  .included__inner{
+    max-width:var(--maxw);
+    margin:0 auto;
+    padding:var(--pad-y) 24px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .included h2{text-align:center;margin-bottom:40px}
+  .cards{display:flex;flex-direction:column;gap:24px;width:100%}
+  .card{
+    display:flex;
+    align-items:center;
+    gap:40px;
+    padding:40px;
+    border-radius:10px;
+    border:1px solid rgba(41,41,41,.7);
+    background:linear-gradient(-45deg,#010101,#191919,#010101);
+  }
+  .card__body{flex:1 1 auto;display:flex;flex-direction:column;gap:16px}
+  .card__num{
+    width:34px;
+    height:34px;
+    border-radius:8px;
+    border:1px solid var(--line);
+    background:radial-gradient(circle,#2c2c2c 0%,#2c2c2c 35%,#191919 100%);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:14px;
+    font-weight:500;
+    color:var(--accent);
+  }
+  .card h3{font-size:22px;line-height:1.3;font-weight:600;color:var(--white)}
+  .card p{font-size:16px;line-height:1.5;color:var(--muted)}
+  .card__check{flex:0 0 auto;width:110px;color:var(--accent)}
+  .card__check svg{width:100%;height:auto}
+  .included .cta{margin-top:40px}
+
+  /* ---------- Metodologia ---------- */
+  .method{padding:var(--pad-y) 24px}
+  .method__inner{
+    max-width:var(--maxw);
+    margin:0 auto;
+    padding:0 24px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+  }
+  .method__icons{display:flex;margin-bottom:16px}
+  .method__icons span{
+    width:32px;
+    height:32px;
+    margin-left:-8px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#191919;
+    border:1px solid var(--line);
+    color:var(--accent);
+  }
+  .method__icons span:first-child{margin-left:0}
+  .method__icons span:last-child{background:linear-gradient(to right,var(--accent),var(--accent-bright));color:var(--accent-ink);border-color:transparent}
+  .method__icons svg{width:15px;height:15px}
+  .method h2{margin-bottom:24px}
+  .method p{max-width:1036px;font-size:18px;line-height:1.6;color:var(--muted)}
+
+  /* ---------- Depoimentos ---------- */
+  .reviews{padding:var(--pad-y) 24px;overflow:hidden}
+  .reviews__inner{max-width:var(--maxw);margin:0 auto;text-align:center}
+  .badge{
+    display:inline-block;
+    padding:8px 20px;
+    border-radius:200px;
+    background:rgba(87,87,87,.2);
+    border:1px solid rgba(255,255,255,.07);
+    font-size:14px;
+    color:var(--muted);
+    margin-bottom:16px;
+  }
+  .badge--brand{
+    background:rgba(235,94,40,.12);
+    border:1px solid rgba(235,94,40,.35);
+    color:var(--accent);
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    padding:7px 18px;
+  }
+  .reviews h2{margin-bottom:32px}
+  .reviews__grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:24px;
+    max-width:var(--maxw);
+    margin:0 auto;
+  }
+  .review-card{
+    background:linear-gradient(-45deg,#010101,#191919,#010101);
+    border:1px solid rgba(41,41,41,.7);
+    border-radius:16px;
+    padding:28px;
+    text-align:left;
+  }
+  .review-card__stars{color:var(--accent);font-size:16px;margin-bottom:12px;letter-spacing:2px}
+  .review-card__text{font-size:15px;line-height:1.6;color:var(--muted);margin-bottom:16px}
+  .review-card__author{font-size:14px;font-weight:600;color:var(--white)}
+
+  /* ---------- Mentor ---------- */
+  .mentor{
+    background:radial-gradient(ellipse at 50% 100%,rgba(235,94,40,.08) 0%,transparent 60%),var(--bg);
+    padding:var(--pad-y) 24px;
+  }
+  .mentor__card{
+    max-width:974px;
+    margin:0 auto;
+    padding:40px;
+    border-radius:30px;
+    background:linear-gradient(#010101,#121212);
+    display:flex;
+    align-items:center;
+    gap:40px;
+  }
+  .mentor__text{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:16px}
+  .mentor__text h2{font-size:32px;line-height:1.3;font-weight:600;color:var(--white);margin-bottom:0}
+  .mentor__text h2 span{
+    background:linear-gradient(to right,var(--accent),var(--accent-bright));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .mentor__text p{font-size:16px;line-height:1.6;color:var(--muted)}
+  .mentor__photo{flex:0 0 340px}
+  .mentor__photo img{width:100%;border-radius:16px}
+  .mentor__photo-placeholder{
+    width:100%;
+    aspect-ratio:3/4;
+    border-radius:16px;
+    background:linear-gradient(135deg,#191919,#262626);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--muted);
+    font-size:14px;
+  }
+
+  .foot{padding:32px 24px 48px;text-align:center;font-size:13px;color:#6a6a6a}
+
+  /* ---------- Responsivo ---------- */
+  @media (max-width:900px){
+    .target__inner{padding:0}
+    .card{flex-direction:column;align-items:flex-start;gap:24px;padding:28px}
+    .card__check{width:72px;align-self:flex-end;margin-top:-24px}
+    .mentor__card{flex-direction:column;padding:28px}
+    .mentor__photo{flex:0 0 auto;width:100%;max-width:360px;order:-1}
+    .included{border-radius:40px;margin:0 16px}
+    .method__inner{padding:0}
+    .reviews__grid{grid-template-columns:1fr}
+  }
+  @media (max-width:640px){
+    :root{--pad-y:40px}
+    .hero__inner{padding:20px 0 24px}
+    .hero .badge{margin-bottom:24px}
+    .hero h1{font-size:24px;margin-bottom:16px}
+    .hero__sub{font-size:16.5px;margin-bottom:40px}
+    .hero .video{margin-bottom:28px}
+    .section-title,.included h2,.method h2,.reviews h2{font-size:28px}
+    .section-title{font-size:clamp(16px,5.1vw,26px);gap:9px}
+    .mentor__text h2{font-size:24px}
+    .method p{font-size:16px}
+    .cta{width:100%;max-width:360px}
+    .cta__label{flex:1 1 auto;padding:0 12px;letter-spacing:-.2px}
+    .included{border-radius:28px;margin:0 12px}
+    .reviews__grid{grid-template-columns:1fr}
+  }
+  @media (max-width:380px){
+    .cta__label{padding:0 8px;letter-spacing:-.4px}
+    .cta__arrow{width:40px;height:40px;flex:0 0 40px}
+    .badge--brand{font-size:12px;padding:6px 14px}
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="hero__inner">
+    <span class="badge badge--brand">Diagnóstico Comercial</span>
+    <h1>Descubra o que está travando suas vendas e como destravar seu processo comercial.</h1>
+    <p class="hero__sub">Esse diagnóstico vai revelar os gargalos invisíveis do seu processo de vendas e te mostrar exatamente o que ajustar para aumentar sua conversão.</p>
+
+    <div class="video">
+      <!-- Substitua o src abaixo pelo link do seu video do YouTube -->
+      <!-- <iframe src="https://www.youtube.com/embed/SEU_VIDEO_ID?rel=0&modestbranding=1&playsinline=1" title="Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> -->
+      <div class="video__placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+        <span>Seu video aqui</span>
+      </div>
+    </div>
+
+    <a class="cta" data-cta href="#" rel="noopener">
+      <span class="cta__label">Quero meu diagnóstico comercial</span>
+      <span class="cta__arrow" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>
+      </span>
+    </a>
+  </div>
+</section>
+
+<!-- ================= PRA QUEM ================= -->
+<section class="target">
+  <div class="target__inner">
+    <div class="target__col">
+      <h2 class="section-title">
+        <span class="section-title__mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"/><path d="M13 6l6 6-6 6"/></svg>
+        </span>
+        <span>Pra quem é esse diagnóstico?</span>
+      </h2>
+      <ul class="checklist">
+        <li>
+          <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+          <span>Pra quem vende todos os dias, mas sente que poderia converter muito mais.</span>
+        </li>
+        <li>
+          <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+          <span>Pra quem perde vendas e não sabe exatamente onde está errando no processo.</span>
+        </li>
+        <li>
+          <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+          <span>Pra quem quer ter um processo comercial estruturado e previsível.</span>
+        </li>
+        <li>
+          <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+          <span>Pra quem quer aprender a ciência por trás da alta conversão.</span>
+        </li>
+        <li>
+          <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+          <span>Pra quem quer sair do achismo e aplicar método nas suas vendas.</span>
+        </li>
+      </ul>
+
+      <a class="cta" data-cta href="#" rel="noopener">
+        <span class="cta__label">Quero meu diagnóstico comercial</span>
+        <span class="cta__arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>
+        </span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= O QUE ESTA INCLUSO ================= -->
+<section class="included">
+  <div class="included__inner">
+    <h2>O que está incluso?</h2>
+
+    <div class="cards">
+      <article class="card">
+        <div class="card__body">
+          <span class="card__num">01</span>
+          <h3>Mental de Vendas</h3>
+          <p>Antes de dominar qualquer técnica, você precisa construir o mindset certo. Sem a mentalidade correta, até a melhor estratégia fracassa.</p>
+        </div>
+        <div class="card__check" aria-hidden="true">
+          <svg viewBox="0 0 120 100" fill="none"><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#eb5e28"/><stop offset="1" stop-color="#FF3E11"/></linearGradient></defs><path d="M8 55 L42 88 L112 8" stroke="url(#g1)" stroke-width="14" stroke-linecap="square"/></svg>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card__body">
+          <span class="card__num">02</span>
+          <h3>Arquitetura Comercial</h3>
+          <p>Estruture seu processo de vendas do zero. Entenda cada etapa e construa um funil que realmente converte, com clareza e previsibilidade.</p>
+        </div>
+        <div class="card__check" aria-hidden="true">
+          <svg viewBox="0 0 120 100" fill="none"><path d="M8 55 L42 88 L112 8" stroke="url(#g1)" stroke-width="14" stroke-linecap="square"/></svg>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card__body">
+          <span class="card__num">03</span>
+          <h3>Fundamento de Conversão</h3>
+          <p>Domine os princípios universais que fazem uma pessoa dizer sim. Persuasão não é dom, é ciência aplicada com ética e estratégia.</p>
+        </div>
+        <div class="card__check" aria-hidden="true">
+          <svg viewBox="0 0 120 100" fill="none"><path d="M8 55 L42 88 L112 8" stroke="url(#g1)" stroke-width="14" stroke-linecap="square"/></svg>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card__body">
+          <span class="card__num">04</span>
+          <h3>Metodologia e Frameworks</h3>
+          <p>Aplique frameworks testados e validados para cada etapa do processo comercial. Pare de improvisar e comece a executar com método.</p>
+        </div>
+        <div class="card__check" aria-hidden="true">
+          <svg viewBox="0 0 120 100" fill="none"><path d="M8 55 L42 88 L112 8" stroke="url(#g1)" stroke-width="14" stroke-linecap="square"/></svg>
+        </div>
+      </article>
+    </div>
+
+    <a class="cta" data-cta href="#" rel="noopener">
+      <span class="cta__label">Quero meu diagnóstico comercial</span>
+      <span class="cta__arrow" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>
+      </span>
+    </a>
+  </div>
+</section>
+
+<!-- ================= METODOLOGIA ================= -->
+<section class="method">
+  <div class="method__inner">
+    <div class="method__icons" aria-hidden="true">
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></span>
+      <span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-8-4.9-8-10.4A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 3.6C20 16.1 12 21 12 21Z"/></svg></span>
+      <span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-5 4V6a2 2 0 0 1 2-2Z"/></svg></span>
+    </div>
+    <h2>Nossa Metodologia</h2>
+    <p>Para vender com alta conversão, você precisa dominar as quatro bases do processo comercial. Quando essas bases estão alinhadas, você deixa de depender de sorte e passa a operar com método, previsibilidade e resultado consistente. Esse é o princípio central do Ciclo da Alta Conversão.</p>
+  </div>
+</section>
+
+<!-- ================= DEPOIMENTOS ================= -->
+<section class="reviews">
+  <div class="reviews__inner">
+    <span class="badge">Resultados reais</span>
+    <h2>O que dizem nossos alunos</h2>
+  </div>
+  <div class="reviews__grid wrap">
+    <div class="review-card">
+      <div class="review-card__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-card__text">"Placeholder: substitua por um depoimento real de um aluno ou cliente satisfeito com os resultados."</p>
+      <span class="review-card__author">Nome do Aluno</span>
+    </div>
+    <div class="review-card">
+      <div class="review-card__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-card__text">"Placeholder: substitua por um depoimento real de um aluno ou cliente satisfeito com os resultados."</p>
+      <span class="review-card__author">Nome do Aluno</span>
+    </div>
+    <div class="review-card">
+      <div class="review-card__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-card__text">"Placeholder: substitua por um depoimento real de um aluno ou cliente satisfeito com os resultados."</p>
+      <span class="review-card__author">Nome do Aluno</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MENTOR ================= -->
+<section class="mentor">
+  <div class="mentor__card">
+    <div class="mentor__text">
+      <h2>Quem é <span>o Rinoel Marinho?</span></h2>
+      <p>Placeholder: adicione aqui uma breve descrição sobre você, sua experiência e autoridade na área de vendas e conversão.</p>
+      <p>Placeholder: conte quantas pessoas você já impactou, resultados alcançados e sua trajetória profissional.</p>
+      <p>Placeholder: descreva sua missão e como você ajuda seus alunos a alcançarem resultados através do método BRADE.</p>
+    </div>
+    <div class="mentor__photo">
+      <!-- Substitua pelo caminho da sua foto -->
+      <!-- <img src="../Imagens/eu.jpg" alt="Rinoel Marinho" loading="lazy"> -->
+      <div class="mentor__photo-placeholder">Sua foto aqui</div>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">&copy; BRADE. Todos os direitos reservados.</footer>
+
+<script>
+(function () {
+  // Substitua pela URL do seu formulario/link de captura
+  var FORM_URL = '#';
+
+  var KEYS = [
+    'utm_source','utm_medium','utm_campaign','utm_content','utm_term','utm_id',
+    'fbclid','gclid','ttclid','msclkid','sck','src','ref'
+  ];
+
+  function readStore() {
+    try { return JSON.parse(sessionStorage.getItem('lp_track') || '{}'); } catch (e) { return {}; }
+  }
+  function writeStore(o) {
+    try { sessionStorage.setItem('lp_track', JSON.stringify(o)); } catch (e) {}
+  }
+
+  var qs = new URLSearchParams(window.location.search);
+  var data = readStore();
+
+  KEYS.forEach(function (k) {
+    var v = qs.get(k);
+    if (v) data[k] = v;
+  });
+
+  if (!data.utm_source && document.referrer) {
+    try { data.referrer = new URL(document.referrer).hostname; } catch (e) {}
+  }
+
+  data.lp = window.location.hostname + window.location.pathname;
+  writeStore(data);
+
+  if (FORM_URL === '#') return;
+
+  var out = new URLSearchParams();
+  Object.keys(data).forEach(function (k) { if (data[k]) out.set(k, data[k]); });
+  var href = out.toString() ? FORM_URL + '?' + out.toString() : FORM_URL;
+
+  document.querySelectorAll('a[data-cta]').forEach(function (a) { a.href = href; });
+})();
+</script>
+
+</body>
+</html>
