@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Diagnóstico Comercial | BRADE</title>
-<meta name="description" content="Descubra o que está travando suas vendas e como destravar seu processo comercial.">
+<title>Plano de Ação Comercial | BRADE</title>
+<meta name="description" content="Descubra o que está travando suas vendas e receba um plano de ação para sair da insegurança silenciosa pra vendas com padrões previsíveis.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -351,6 +351,43 @@
     font-size:14px;
   }
 
+  /* ---------- Video facades ---------- */
+  .video-facade{
+    position:relative;
+    border-radius:12px;
+    overflow:hidden;
+    cursor:pointer;
+    background:#111;
+  }
+  .video-facade img{width:100%;height:100%;object-fit:cover;display:block}
+  .video-facade .play-btn{
+    position:absolute;
+    top:50%;left:50%;
+    transform:translate(-50%,-50%);
+    width:48px;height:48px;
+    border-radius:50%;
+    background:rgba(235,94,40,.9);
+    display:flex;align-items:center;justify-content:center;
+    transition:transform .2s ease,background .2s ease;
+  }
+  .video-facade:hover .play-btn{transform:translate(-50%,-50%) scale(1.1);background:var(--accent-bright)}
+  .video-facade .play-btn svg{width:20px;height:20px}
+  .video-name{text-align:center;margin-top:10px;font-size:14px;font-weight:600;color:var(--white)}
+  .video-name span{font-weight:400;color:var(--muted)}
+  .reviews__main{max-width:720px;margin:0 auto 24px}
+  .reviews__shorts{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:var(--maxw);margin:0 auto}
+
+  /* ---------- Stats ---------- */
+  .stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:16px;
+    margin-bottom:24px;
+  }
+  .stat{text-align:center}
+  .stat__num{font-size:24px;font-weight:800;color:var(--accent);line-height:1.2}
+  .stat__label{font-size:12px;color:var(--muted);line-height:1.3}
+
   .foot{padding:32px 24px 48px;text-align:center;font-size:13px;color:#6a6a6a}
 
   /* ---------- Responsivo ---------- */
@@ -363,6 +400,8 @@
     .included{border-radius:40px;margin:0 16px}
     .method__inner{padding:0}
     .reviews__grid{grid-template-columns:1fr}
+    .reviews__shorts{grid-template-columns:1fr;max-width:300px;margin:0 auto}
+    .stats{grid-template-columns:repeat(2,1fr)}
   }
   @media (max-width:640px){
     :root{--pad-y:40px}
@@ -392,9 +431,9 @@
 <!-- ================= HERO ================= -->
 <section class="hero">
   <div class="hero__inner">
-    <span class="badge badge--brand">Diagnóstico Comercial</span>
-    <h1>Descubra o que está travando suas vendas e como destravar seu processo comercial.</h1>
-    <p class="hero__sub">Esse diagnóstico vai revelar os gargalos invisíveis do seu processo de vendas e te mostrar exatamente o que ajustar para aumentar sua conversão.</p>
+    <span class="badge badge--brand">Plano de Ação</span>
+    <h1>Descubra o que está travando suas vendas!</h1>
+    <p class="hero__sub">Você receberá um plano de ação que vai revelar como sair da insegurança silenciosa pra vendas com padrões previsíveis.</p>
 
     <div class="video">
       <!-- Substitua o src abaixo pelo link do seu video do YouTube -->
@@ -406,7 +445,7 @@
     </div>
 
     <a class="cta" data-cta href="#" rel="noopener">
-      <span class="cta__label">Quero meu diagnóstico comercial</span>
+      <span class="cta__label">Quero meu plano de ação</span>
       <span class="cta__arrow" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>
       </span>
@@ -422,7 +461,7 @@
         <span class="section-title__mark" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"/><path d="M13 6l6 6-6 6"/></svg>
         </span>
-        <span>Pra quem é esse diagnóstico?</span>
+        <span>Pra quem é esse plano de ação?</span>
       </h2>
       <ul class="checklist">
         <li>
@@ -448,7 +487,7 @@
       </ul>
 
       <a class="cta" data-cta href="#" rel="noopener">
-        <span class="cta__label">Quero meu diagnóstico comercial</span>
+        <span class="cta__label">Quero meu plano de ação</span>
         <span class="cta__arrow" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>
         </span>
@@ -466,8 +505,8 @@
       <article class="card">
         <div class="card__body">
           <span class="card__num">01</span>
-          <h3>Mental de Vendas</h3>
-          <p>Antes de dominar qualquer técnica, você precisa construir o mindset certo. Sem a mentalidade correta, até a melhor estratégia fracassa.</p>
+          <h3>Os 7 Princípios Universais de Vendas</h3>
+          <p>As leis que funcionam independente do produto, do mercado ou do seu perfil. A base de tudo o que vem depois.</p>
         </div>
         <div class="card__check" aria-hidden="true">
           <svg viewBox="0 0 120 100" fill="none"><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#eb5e28"/><stop offset="1" stop-color="#FF3E11"/></linearGradient></defs><path d="M8 55 L42 88 L112 8" stroke="url(#g1)" stroke-width="14" stroke-linecap="square"/></svg>
@@ -477,8 +516,8 @@
       <article class="card">
         <div class="card__body">
           <span class="card__num">02</span>
-          <h3>Arquitetura Comercial</h3>
-          <p>Estruture seu processo de vendas do zero. Entenda cada etapa e construa um funil que realmente converte, com clareza e previsibilidade.</p>
+          <h3>O Ciclo de 5 Fases</h3>
+          <p>Prospecção, Conexão, Diagnóstico, Proposta e Fechamento. O passo a passo completo pra você nunca mais improvisar uma venda.</p>
         </div>
         <div class="card__check" aria-hidden="true">
           <svg viewBox="0 0 120 100" fill="none"><path d="M8 55 L42 88 L112 8" stroke="url(#g1)" stroke-width="14" stroke-linecap="square"/></svg>
@@ -488,8 +527,8 @@
       <article class="card">
         <div class="card__body">
           <span class="card__num">03</span>
-          <h3>Fundamento de Conversão</h3>
-          <p>Domine os princípios universais que fazem uma pessoa dizer sim. Persuasão não é dom, é ciência aplicada com ética e estratégia.</p>
+          <h3>O Sistema Semanal de Execução</h3>
+          <p>Um sistema prático com blocos diários e semanais que transforma o plano em rotina e a rotina em resultado.</p>
         </div>
         <div class="card__check" aria-hidden="true">
           <svg viewBox="0 0 120 100" fill="none"><path d="M8 55 L42 88 L112 8" stroke="url(#g1)" stroke-width="14" stroke-linecap="square"/></svg>
@@ -499,8 +538,8 @@
       <article class="card">
         <div class="card__body">
           <span class="card__num">04</span>
-          <h3>Metodologia e Frameworks</h3>
-          <p>Aplique frameworks testados e validados para cada etapa do processo comercial. Pare de improvisar e comece a executar com método.</p>
+          <h3>Os 5 Compromissos do Vendedor de Alta Performance</h3>
+          <p>O mindset que separa quem vende por sorte de quem vende por método. Consistência, responsabilidade e jogo longo.</p>
         </div>
         <div class="card__check" aria-hidden="true">
           <svg viewBox="0 0 120 100" fill="none"><path d="M8 55 L42 88 L112 8" stroke="url(#g1)" stroke-width="14" stroke-linecap="square"/></svg>
@@ -509,7 +548,7 @@
     </div>
 
     <a class="cta" data-cta href="#" rel="noopener">
-      <span class="cta__label">Quero meu diagnóstico comercial</span>
+      <span class="cta__label">Quero meu plano de ação</span>
       <span class="cta__arrow" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>
       </span>
@@ -526,7 +565,7 @@
       <span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-5 4V6a2 2 0 0 1 2-2Z"/></svg></span>
     </div>
     <h2>Nossa Metodologia</h2>
-    <p>Para vender com alta conversão, você precisa dominar as quatro bases do processo comercial. Quando essas bases estão alinhadas, você deixa de depender de sorte e passa a operar com método, previsibilidade e resultado consistente. Esse é o princípio central do Ciclo da Alta Conversão.</p>
+    <p>Para vender com alta conversão, você precisa dominar as três bases das vendas de um padrão comercial: "PDF" (Pergunta, Demonstra e Fecha). Quando essas bases estão alinhadas, você deixa de depender de sorte e passa a operar com método, previsibilidade e resultado consistente.</p>
   </div>
 </section>
 
@@ -536,21 +575,36 @@
     <span class="badge">Resultados reais</span>
     <h2>O que dizem nossos alunos</h2>
   </div>
-  <div class="reviews__grid wrap">
-    <div class="review-card">
-      <div class="review-card__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-      <p class="review-card__text">"Placeholder: substitua por um depoimento real de um aluno ou cliente satisfeito com os resultados."</p>
-      <span class="review-card__author">Nome do Aluno</span>
+  <div class="wrap">
+    <div class="reviews__main">
+      <div class="video-facade" style="aspect-ratio:16/9;" data-yt="i9MFJPwIuX4">
+        <img src="https://img.youtube.com/vi/i9MFJPwIuX4/hqdefault.jpg" alt="Depoimento Alexandre Kzam" loading="lazy">
+        <div class="play-btn"><svg viewBox="0 0 24 24" fill="white"><polygon points="6,3 20,12 6,21"/></svg></div>
+      </div>
+      <p class="video-name">Alexandre Kzam <span>— Terapeuta</span></p>
     </div>
-    <div class="review-card">
-      <div class="review-card__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-      <p class="review-card__text">"Placeholder: substitua por um depoimento real de um aluno ou cliente satisfeito com os resultados."</p>
-      <span class="review-card__author">Nome do Aluno</span>
-    </div>
-    <div class="review-card">
-      <div class="review-card__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-      <p class="review-card__text">"Placeholder: substitua por um depoimento real de um aluno ou cliente satisfeito com os resultados."</p>
-      <span class="review-card__author">Nome do Aluno</span>
+    <div class="reviews__shorts">
+      <div>
+        <div class="video-facade" style="aspect-ratio:9/16;max-height:480px;" data-yt="e4uZkgXBqO8">
+          <img src="https://img.youtube.com/vi/e4uZkgXBqO8/hqdefault.jpg" alt="Depoimento Henrique Alcântara" loading="lazy">
+          <div class="play-btn"><svg viewBox="0 0 24 24" fill="white"><polygon points="6,3 20,12 6,21"/></svg></div>
+        </div>
+        <p class="video-name">Henrique Alcântara <span>— Advogado</span></p>
+      </div>
+      <div>
+        <div class="video-facade" style="aspect-ratio:9/16;max-height:480px;" data-yt="kfKYXrLNP-M">
+          <img src="https://img.youtube.com/vi/kfKYXrLNP-M/hqdefault.jpg" alt="Depoimento Leonardo Duarte" loading="lazy">
+          <div class="play-btn"><svg viewBox="0 0 24 24" fill="white"><polygon points="6,3 20,12 6,21"/></svg></div>
+        </div>
+        <p class="video-name">Leonardo Duarte <span>— Gestor Comercial</span></p>
+      </div>
+      <div>
+        <div class="video-facade" style="aspect-ratio:9/16;max-height:480px;" data-yt="kZjoNLoIch4">
+          <img src="https://img.youtube.com/vi/kZjoNLoIch4/hqdefault.jpg" alt="Depoimento Orlando Ribeiro" loading="lazy">
+          <div class="play-btn"><svg viewBox="0 0 24 24" fill="white"><polygon points="6,3 20,12 6,21"/></svg></div>
+        </div>
+        <p class="video-name">Orlando Ribeiro <span>— Supervisor comercial</span></p>
+      </div>
     </div>
   </div>
 </section>
@@ -560,14 +614,17 @@
   <div class="mentor__card">
     <div class="mentor__text">
       <h2>Quem é <span>o Rinoel Marinho?</span></h2>
-      <p>Placeholder: adicione aqui uma breve descrição sobre você, sua experiência e autoridade na área de vendas e conversão.</p>
-      <p>Placeholder: conte quantas pessoas você já impactou, resultados alcançados e sua trajetória profissional.</p>
-      <p>Placeholder: descreva sua missão e como você ajuda seus alunos a alcançarem resultados através do método BRADE.</p>
+      <div class="stats">
+        <div class="stat"><div class="stat__num">R$ 15M+</div><div class="stat__label">Total vendido</div></div>
+        <div class="stat"><div class="stat__num">1.000+</div><div class="stat__label">Vendas individuais</div></div>
+        <div class="stat"><div class="stat__num">4.000+</div><div class="stat__label">Vendas no time outbound</div></div>
+        <div class="stat"><div class="stat__num">20</div><div class="stat__label">Franquias gerenciadas (V4 Company)</div></div>
+      </div>
+      <p>Ao aplicar meus conhecimentos em vendas tive a oportunidade de trabalhar lado a lado com Flávio Augusto e Caio Carneiro. Minhas técnicas me levaram a ser gerente regional de 20 franquias da V4 Company e a liderar um time que fechou mais de 4.000 vendas somente por prospecção fria.</p>
+      <p>Sou de Belém do Pará e não me apresento como professor de vendas porque nunca fui, sou um vendedor que decidiu mostrar o que funciona de verdade, porque a maioria do que se ensina por aí nunca foi testado no campo ou não tem embasamento científico.</p>
     </div>
     <div class="mentor__photo">
-      <!-- Substitua pelo caminho da sua foto -->
-      <!-- <img src="../Imagens/eu.jpg" alt="Rinoel Marinho" loading="lazy"> -->
-      <div class="mentor__photo-placeholder">Sua foto aqui</div>
+      <img src="../Imagens/eu.jpg" alt="Rinoel Marinho" loading="lazy">
     </div>
   </div>
 </section>
@@ -613,6 +670,20 @@
   var href = out.toString() ? FORM_URL + '?' + out.toString() : FORM_URL;
 
   document.querySelectorAll('a[data-cta]').forEach(function (a) { a.href = href; });
+
+  document.querySelectorAll('.video-facade[data-yt]').forEach(function (el) {
+    el.addEventListener('click', function () {
+      var id = el.getAttribute('data-yt');
+      var iframe = document.createElement('iframe');
+      iframe.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1&rel=0';
+      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      iframe.allowFullscreen = true;
+      iframe.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;border:0';
+      el.style.position = 'relative';
+      el.innerHTML = '';
+      el.appendChild(iframe);
+    });
+  });
 })();
 </script>
 
