@@ -351,28 +351,10 @@
     font-size:14px;
   }
 
-  /* ---------- Video facades ---------- */
-  .video-facade{
-    position:relative;
-    border-radius:12px;
-    overflow:hidden;
-    cursor:pointer;
-    background:#111;
+  /* ---------- Video iframes ---------- */
+  .video iframe, .reviews__main iframe, .reviews__shorts iframe{
+    border:0;border-radius:12px;
   }
-  .video-facade img{width:100%;height:100%;object-fit:cover;display:block}
-  .video-facade .play-btn{
-    position:absolute;
-    top:50%;left:50%;
-    transform:translate(-50%,-50%);
-    width:68px;height:68px;
-    border-radius:50%;
-    background:var(--accent);
-    box-shadow:0 4px 20px rgba(0,0,0,.4);
-    display:flex;align-items:center;justify-content:center;
-    transition:transform .2s ease,background .2s ease;
-  }
-  .video-facade:hover .play-btn{transform:translate(-50%,-50%) scale(1.08);background:var(--accent-bright)}
-  .video-facade .play-btn svg{width:28px;height:28px;margin-left:3px}
   .video-name{text-align:center;margin-top:10px;font-size:14px;font-weight:600;color:var(--white)}
   .video-name span{font-weight:400;color:var(--muted)}
   .reviews__main{max-width:720px;margin:0 auto 24px}
@@ -437,10 +419,7 @@
     <p class="hero__sub">Você receberá um plano de ação que vai revelar como sair da insegurança silenciosa pra vendas com padrões previsíveis.</p>
 
     <div class="video">
-      <div class="video-facade" style="width:100%;height:100%;" data-yt="ZR-QhPrzOHU">
-        <img src="https://img.youtube.com/vi/ZR-QhPrzOHU/maxresdefault.jpg" alt="Aprenda a vender" loading="eager">
-        <div class="play-btn"><svg viewBox="0 0 24 24" fill="white"><polygon points="6,3 20,12 6,21"/></svg></div>
-      </div>
+      <iframe width="100%" height="100%" src="https://www.youtube.com/embed/ZR-QhPrzOHU?rel=0" title="Aprenda a vender" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </div>
 
     <a class="cta" data-cta href="#" rel="noopener">
@@ -576,32 +555,20 @@
   </div>
   <div class="wrap">
     <div class="reviews__main">
-      <div class="video-facade" style="aspect-ratio:16/9;" data-yt="i9MFJPwIuX4">
-        <img src="https://img.youtube.com/vi/i9MFJPwIuX4/hqdefault.jpg" alt="Depoimento Alexandre Kzam" loading="lazy">
-        <div class="play-btn"><svg viewBox="0 0 24 24" fill="white"><polygon points="6,3 20,12 6,21"/></svg></div>
-      </div>
+      <iframe style="aspect-ratio:16/9;width:100%;" src="https://www.youtube.com/embed/i9MFJPwIuX4?rel=0" title="Depoimento Alexandre Kzam" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
       <p class="video-name">Alexandre Kzam <span>— Terapeuta</span></p>
     </div>
     <div class="reviews__shorts">
       <div>
-        <div class="video-facade" style="aspect-ratio:9/16;max-height:480px;" data-yt="e4uZkgXBqO8">
-          <img src="https://img.youtube.com/vi/e4uZkgXBqO8/hqdefault.jpg" alt="Depoimento Henrique Alcântara" loading="lazy">
-          <div class="play-btn"><svg viewBox="0 0 24 24" fill="white"><polygon points="6,3 20,12 6,21"/></svg></div>
-        </div>
+        <iframe style="aspect-ratio:9/16;max-height:480px;width:100%;" src="https://www.youtube.com/embed/e4uZkgXBqO8?rel=0" title="Depoimento Henrique Alcântara" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
         <p class="video-name">Henrique Alcântara <span>— Advogado</span></p>
       </div>
       <div>
-        <div class="video-facade" style="aspect-ratio:9/16;max-height:480px;" data-yt="kfKYXrLNP-M">
-          <img src="https://img.youtube.com/vi/kfKYXrLNP-M/hqdefault.jpg" alt="Depoimento Leonardo Duarte" loading="lazy">
-          <div class="play-btn"><svg viewBox="0 0 24 24" fill="white"><polygon points="6,3 20,12 6,21"/></svg></div>
-        </div>
+        <iframe style="aspect-ratio:9/16;max-height:480px;width:100%;" src="https://www.youtube.com/embed/kfKYXrLNP-M?rel=0" title="Depoimento Leonardo Duarte" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
         <p class="video-name">Leonardo Duarte <span>— Gestor Comercial</span></p>
       </div>
       <div>
-        <div class="video-facade" style="aspect-ratio:9/16;max-height:480px;" data-yt="kZjoNLoIch4">
-          <img src="https://img.youtube.com/vi/kZjoNLoIch4/hqdefault.jpg" alt="Depoimento Orlando Ribeiro" loading="lazy">
-          <div class="play-btn"><svg viewBox="0 0 24 24" fill="white"><polygon points="6,3 20,12 6,21"/></svg></div>
-        </div>
+        <iframe style="aspect-ratio:9/16;max-height:480px;width:100%;" src="https://www.youtube.com/embed/kZjoNLoIch4?rel=0" title="Depoimento Orlando Ribeiro" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
         <p class="video-name">Orlando Ribeiro <span>— Supervisor comercial</span></p>
       </div>
     </div>
@@ -670,19 +637,6 @@
 
   document.querySelectorAll('a[data-cta]').forEach(function (a) { a.href = href; });
 
-  document.querySelectorAll('.video-facade[data-yt]').forEach(function (el) {
-    el.addEventListener('click', function () {
-      var id = el.getAttribute('data-yt');
-      var iframe = document.createElement('iframe');
-      iframe.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1&mute=1&rel=0&playsinline=1';
-      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-      iframe.allowFullscreen = true;
-      iframe.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;border:0';
-      el.style.position = 'relative';
-      el.innerHTML = '';
-      el.appendChild(iframe);
-    });
-  });
 })();
 </script>
 
