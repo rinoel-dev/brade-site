@@ -599,8 +599,17 @@
 
 <script>
 (function () {
-  var FORM_URL = 'https://tally.so/r/VL6KRl?touchpoint=Coment%C3%A1rio%20Reels';
-  document.querySelectorAll('a[data-cta]').forEach(function (a) { a.href = FORM_URL; });
+  var url = new URL('https://tally.so/r/VL6KRl?touchpoint=Coment%C3%A1rio%20Reels');
+  var params = new URLSearchParams(window.location.search);
+
+  var keyword = params.get('keyword');
+  var touchpoint = params.get('touchpoint');
+
+  if (keyword) url.searchParams.set('keyword', keyword);
+  if (touchpoint) url.searchParams.set('touchpoint', touchpoint);
+
+  var href = url.toString();
+  document.querySelectorAll('a[data-cta]').forEach(function (a) { a.href = href; });
 })();
 </script>
 
