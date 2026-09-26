@@ -337,6 +337,7 @@
     let resizeTimer = null;
     const videoEls = {};    // src -> <video>
     let suppressBroadcast = false;
+    let videoBroadcastTimer = null;
 
     function generateSessionId() {
       if (window.crypto && crypto.randomUUID) {
@@ -404,7 +405,12 @@
         if (!isViewer) {
           el.controls = true;
           ['play', 'pause', 'seeked'].forEach(evt =>
-            el.addEventListener(evt, () => { if (!suppressBroadcast) broadcastState(); })
+            el.addEventListener(evt, () => {
+              if (suppressBroadcast) return;
+              // Agrupa eventos em sequência (ex.: arrastar a barra) numa mensagem só
+              clearTimeout(videoBroadcastTimer);
+              videoBroadcastTimer = setTimeout(broadcastState, 300);
+            })
           );
         }
         container.appendChild(el);
@@ -659,11 +665,6 @@
           <div class="slide-canvas-wrapper"><canvas id="pdf-canvas"></canvas></div>
           <button class="sound-btn" id="sound-btn">🔊 Ativar som</button>
         </div>
-        <div class="overlay" id="join-overlay">
-          <div class="title">Apresentação ao vivo</div>
-          <div class="sub">Toque para entrar e acompanhar (com áudio)</div>
-          <button id="join-btn">Entrar na apresentação</button>
-        </div>
       `;
       createVideoElements(document.getElementById('stage'));
       document.getElementById('sound-btn').addEventListener('click', () => {
@@ -671,16 +672,25 @@
         if (v) { v.muted = false; v.play().catch(() => {}); }
         document.getElementById('sound-btn').classList.remove('show');
       });
-      // O toque do usuário libera o áudio dos vídeos no navegador (iOS/Android/desktop)
-      document.getElementById('join-btn').addEventListener('click', () => {
+      // Qualquer toque na tela libera o áudio dos vídeos (exigência do iOS/Android)
+      const unlock = () => {
+        const cur = currentVideo();
         Object.values(videoEls).forEach(v => {
+          if (v === cur && !v.paused) {
+            v.muted = false;
+            document.getElementById('sound-btn').classList.remove('show');
+            return;
+          }
           const p = v.play();
           if (p && p.catch) p.catch(() => {});
           v.pause();
         });
-        document.getElementById('join-overlay').remove();
-        startViewer();
-      }, { once: true });
+        document.removeEventListener('pointerdown', unlock, true);
+        document.removeEventListener('touchend', unlock, true);
+      };
+      document.addEventListener('pointerdown', unlock, true);
+      document.addEventListener('touchend', unlock, true);
+      startViewer();
     }
 
     async function startViewer() {
