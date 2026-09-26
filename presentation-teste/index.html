@@ -38,8 +38,12 @@
     .presenter-app {
       display: grid;
       grid-template-rows: auto 1fr auto;
+      grid-template-columns: minmax(0, 1fr);
       height: 100vh;
+      height: 100dvh; /* no celular, desconta as barras do navegador */
     }
+    .presenter-app > * { min-width: 0; }
+    .share-box, .share-box .url { min-width: 0; }
     .presenter-app.with-notes {
       grid-template-columns: minmax(0, 1fr) minmax(300px, 32vw);
       grid-template-areas:
@@ -113,11 +117,13 @@
     .notes textarea::placeholder { color: #525252; }
     @media (max-width: 900px) {
       .presenter-app.with-notes {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto minmax(0, 1fr) auto minmax(200px, 38vh);
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto minmax(0, 1fr) auto minmax(200px, 42%);
         grid-template-areas: "top" "stage" "controls" "notes";
       }
       .notes { border-left: 0; border-top: 1px solid var(--border); }
+      .video-hint { display: none; }
+      .controls { padding: 12px 16px; }
     }
     .topbar {
       padding: 14px 20px;
