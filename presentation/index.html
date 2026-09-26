@@ -236,6 +236,70 @@
       .share-box { max-width: none; }
       .brand { text-align: center; }
     }
+    .slide-video {
+      display: none;
+      max-width: 100%;
+      max-height: 100%;
+      background: #000;
+      border-radius: 4px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    .slide-video.active { display: block; }
+    .slide-canvas-wrapper.hidden { display: none; }
+    .viewer-app .slide-video { max-height: calc(100vh - 32px); }
+    .stage .slide-video { max-height: calc(100vh - 220px); }
+    .overlay {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      background: rgba(5,5,5,0.92);
+      z-index: 500;
+      text-align: center;
+      padding: 24px;
+    }
+    .overlay .title {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 26px;
+      color: var(--accent);
+    }
+    .overlay .sub {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+    .overlay button, .sound-btn {
+      background: var(--accent);
+      color: #0a0a0a;
+      border: 0;
+      padding: 14px 26px;
+      border-radius: 100px;
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    .sound-btn {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 400;
+      display: none;
+    }
+    .sound-btn.show { display: block; }
+    .video-hint {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
   </style>
 </head>
 <body>
@@ -248,6 +312,14 @@
     const NTFY_SERVER = 'https://ntfy.sh';
     const TOPIC_PREFIX = 'brade-slides-sync';
 
+    // Vídeos inseridos entre os slides do PDF.
+    // "after: 13" = o vídeo entra depois do slide 13 do PDF.
+    const VIDEOS = [
+      { after: 13, src: 'depo1.mp4' },
+      { after: 13, src: 'depo2.mp4' },
+      { after: 17, src: 'simulacao.mp4' }
+    ];
+
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
     // ===== Estado =====
@@ -256,12 +328,15 @@
     let session = isViewer ? hashSession : generateSessionId();
 
     let pdfDoc = null;
-    let currentPage = 1;
+    let deck = [];          // [{ type: 'pdf', page } | { type: 'video', src }]
+    let currentPage = 1;    // posição no deck (1-based)
     let totalPages = 0;
     let isRendering = false;
     let pendingPage = null;
     let eventSource = null;
     let resizeTimer = null;
+    const videoEls = {};    // src -> <video>
+    let suppressBroadcast = false;
 
     function generateSessionId() {
       if (window.crypto && crypto.randomUUID) {
@@ -300,9 +375,54 @@
       }
     }
 
+    function buildDeck(numPages) {
+      const items = [];
+      VIDEOS.filter(v => v.after === 0).forEach(v => items.push({ type: 'video', src: v.src }));
+      for (let p = 1; p <= numPages; p++) {
+        items.push({ type: 'pdf', page: p });
+        VIDEOS.filter(v => v.after === p).forEach(v => items.push({ type: 'video', src: v.src }));
+      }
+      return items;
+    }
+
     async function loadPdf() {
       pdfDoc = await pdfjsLib.getDocument(PDF_FILE).promise;
-      totalPages = pdfDoc.numPages;
+      deck = buildDeck(pdfDoc.numPages);
+      totalPages = deck.length;
+    }
+
+    // ===== Vídeos =====
+    function createVideoElements(container) {
+      VIDEOS.forEach(v => {
+        const el = document.createElement('video');
+        el.className = 'slide-video';
+        el.src = v.src;
+        el.preload = isViewer ? 'auto' : 'metadata';
+        el.playsInline = true;
+        el.setAttribute('playsinline', '');
+        el.setAttribute('webkit-playsinline', '');
+        if (!isViewer) {
+          el.controls = true;
+          ['play', 'pause', 'seeked'].forEach(evt =>
+            el.addEventListener(evt, () => { if (!suppressBroadcast) broadcastState(); })
+          );
+        }
+        container.appendChild(el);
+        videoEls[v.src] = el;
+      });
+    }
+
+    function currentItem() { return deck[currentPage - 1]; }
+
+    function currentVideo() {
+      const item = currentItem();
+      return item && item.type === 'video' ? videoEls[item.src] : null;
+    }
+
+    function videoState() {
+      const v = currentVideo();
+      if (!v) return null;
+      return { playing: !v.paused && !v.ended, time: v.currentTime };
     }
 
     async function renderPage(pageNum) {
@@ -311,34 +431,53 @@
       if (isRendering) { pendingPage = pageNum; return; }
 
       isRendering = true;
+      const changed = pageNum !== currentPage;
       currentPage = pageNum;
 
       const canvas = document.getElementById('pdf-canvas');
       if (!canvas) { isRendering = false; return; }
+      const wrapper = canvas.parentElement;
+      const item = deck[pageNum - 1];
 
-      const page = await pdfDoc.getPage(pageNum);
-      const stage = canvas.parentElement.parentElement;
-      const stageRect = stage.getBoundingClientRect();
-      const padding = 40;
-      const availW = Math.max(200, stageRect.width - padding);
-      const availH = Math.max(200, stageRect.height - padding);
+      suppressBroadcast = true;
+      Object.entries(videoEls).forEach(([src, el]) => {
+        const active = item.type === 'video' && item.src === src;
+        el.classList.toggle('active', active);
+        if (!active && !el.paused) el.pause();
+        if (active && changed) { try { el.currentTime = 0; } catch (e) {} }
+      });
+      suppressBroadcast = false;
 
-      const baseViewport = page.getViewport({ scale: 1 });
-      const fitScale = Math.min(availW / baseViewport.width, availH / baseViewport.height);
-      const dpr = window.devicePixelRatio || 1;
-      const viewport = page.getViewport({ scale: fitScale * dpr });
+      if (item.type === 'video') {
+        wrapper.classList.add('hidden');
+      } else {
+        wrapper.classList.remove('hidden');
+        const page = await pdfDoc.getPage(item.page);
+        const stage = wrapper.parentElement;
+        const stageRect = stage.getBoundingClientRect();
+        const padding = 40;
+        const availW = Math.max(200, stageRect.width - padding);
+        const availH = Math.max(200, stageRect.height - padding);
 
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-      canvas.style.width = (viewport.width / dpr) + 'px';
-      canvas.style.height = (viewport.height / dpr) + 'px';
+        const baseViewport = page.getViewport({ scale: 1 });
+        const fitScale = Math.min(availW / baseViewport.width, availH / baseViewport.height);
+        const dpr = window.devicePixelRatio || 1;
+        const viewport = page.getViewport({ scale: fitScale * dpr });
 
-      try {
-        await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
-      } catch (e) {}
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        canvas.style.width = (viewport.width / dpr) + 'px';
+        canvas.style.height = (viewport.height / dpr) + 'px';
+
+        try {
+          await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
+        } catch (e) {}
+      }
 
       const counter = document.getElementById('counter');
       if (counter) counter.innerHTML = `<strong>${currentPage}</strong> / ${totalPages}`;
+      const hint = document.getElementById('video-hint');
+      if (hint) hint.style.visibility = item.type === 'video' ? 'visible' : 'hidden';
 
       const prevBtn = document.getElementById('prev-btn');
       const nextBtn = document.getElementById('next-btn');
@@ -351,6 +490,9 @@
         const next = pendingPage;
         pendingPage = null;
         renderPage(next);
+      } else {
+        pendingPage = null;
+        if (!isViewer && changed) broadcastState();
       }
     }
 
@@ -359,11 +501,15 @@
       resizeTimer = setTimeout(() => renderPage(currentPage), 150);
     }
 
-    async function broadcastSlide(pageNum) {
+    // ===== Sincronização =====
+    async function broadcastState() {
+      const payload = { page: currentPage, t: Date.now() };
+      const vs = videoState();
+      if (vs) payload.video = vs;
       try {
         await fetch(`${NTFY_SERVER}/${getTopic()}`, {
           method: 'POST',
-          body: JSON.stringify({ page: pageNum, t: Date.now() })
+          body: JSON.stringify(payload)
         });
       } catch (err) { console.error('Broadcast failed:', err); }
     }
@@ -377,7 +523,7 @@
           const data = JSON.parse(e.data);
           if (data.event === 'message' && data.message) {
             const payload = JSON.parse(data.message);
-            if (payload.page) onMessage(payload.page);
+            if (payload.page) onMessage(payload, 0);
           }
         } catch (err) {}
       };
@@ -395,10 +541,41 @@
         const last = JSON.parse(lines[lines.length - 1]);
         if (last.event === 'message' && last.message) {
           const payload = JSON.parse(last.message);
-          return payload.page || null;
+          if (!payload.page) return null;
+          // Tempo que passou desde a última mensagem (para entrar no meio de um vídeo)
+          const elapsed = last.time ? Math.max(0, Date.now() / 1000 - last.time) : 0;
+          return { payload, elapsed };
         }
       } catch (err) {}
       return null;
+    }
+
+    async function applyRemoteState(payload, elapsed) {
+      if (payload.page !== currentPage) await renderPage(payload.page);
+      const v = currentVideo();
+      if (!v || !payload.video) return;
+      const { playing, time } = payload.video;
+      let target = time + (playing ? elapsed : 0);
+      if (v.duration && target >= v.duration) target = Math.max(0, v.duration - 0.1);
+      if (Math.abs(v.currentTime - target) > (playing ? 0.4 : 0.05)) {
+        try { v.currentTime = target; } catch (e) {}
+      }
+      if (playing) playViewerVideo(v);
+      else if (!v.paused) v.pause();
+    }
+
+    function playViewerVideo(v) {
+      v.muted = false;
+      const p = v.play();
+      if (p && p.catch) {
+        p.catch(() => {
+          // Navegador bloqueou o som: toca mudo e mostra o botão de ativar o som
+          v.muted = true;
+          v.play().catch(() => {});
+          const btn = document.getElementById('sound-btn');
+          if (btn) btn.classList.add('show');
+        });
+      }
     }
 
     function showError(msg) {
@@ -410,6 +587,7 @@
       `;
     }
 
+    // ===== Apresentador =====
     async function renderPresenter() {
       document.getElementById('app').innerHTML = `
         <div class="presenter-app">
@@ -422,7 +600,7 @@
               <button id="open-btn">Abrir</button>
             </div>
           </div>
-          <div class="stage">
+          <div class="stage" id="stage">
             <div class="slide-canvas-wrapper"><canvas id="pdf-canvas"></canvas></div>
           </div>
           <div class="controls">
@@ -433,16 +611,23 @@
             <button class="nav-btn" id="next-btn" aria-label="Próximo">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
             </button>
+            <div class="video-hint" id="video-hint" style="visibility:hidden">Vídeo · espaço = play/pause</div>
           </div>
         </div>
       `;
+      createVideoElements(document.getElementById('stage'));
       document.getElementById('copy-btn').addEventListener('click', () => copyToClipboard(buildViewerUrl()));
       document.getElementById('open-btn').addEventListener('click', () => window.open(buildViewerUrl(), '_blank'));
       document.getElementById('prev-btn').addEventListener('click', () => goTo(currentPage - 1));
       document.getElementById('next-btn').addEventListener('click', () => goTo(currentPage + 1));
       document.addEventListener('keydown', (e) => {
         if (e.target.tagName === 'INPUT') return;
-        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        const v = currentVideo();
+        if (e.key === ' ' && e.target.tagName === 'VIDEO') return; // controle nativo já trata
+        if (e.key === ' ' && v) {
+          e.preventDefault();
+          if (v.paused) v.play(); else v.pause();
+        } else if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
           e.preventDefault(); goTo(currentPage + 1);
         } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
           e.preventDefault(); goTo(currentPage - 1);
@@ -451,8 +636,8 @@
       window.addEventListener('resize', handleResize);
       try {
         await loadPdf();
+        currentPage = 0;
         await renderPage(1);
-        broadcastSlide(1);
       } catch (err) {
         showError(`Verifica se "${PDF_FILE}" existe nesta pasta. ${err.message}`);
       }
@@ -461,26 +646,53 @@
     function goTo(pageNum) {
       if (pageNum < 1 || pageNum > totalPages) return;
       renderPage(pageNum);
-      broadcastSlide(pageNum);
     }
 
-    async function renderViewer() {
+    // ===== Espectador =====
+    function renderViewer() {
       document.getElementById('app').innerHTML = `
-        <div class="viewer-app">
+        <div class="viewer-app" id="stage">
           <div class="viewer-status">
             <div class="pulse" id="status-pulse"></div>
             <span id="status-text">Conectando</span>
           </div>
           <div class="slide-canvas-wrapper"><canvas id="pdf-canvas"></canvas></div>
+          <button class="sound-btn" id="sound-btn">🔊 Ativar som</button>
+        </div>
+        <div class="overlay" id="join-overlay">
+          <div class="title">Apresentação ao vivo</div>
+          <div class="sub">Toque para entrar e acompanhar (com áudio)</div>
+          <button id="join-btn">Entrar na apresentação</button>
         </div>
       `;
+      createVideoElements(document.getElementById('stage'));
+      document.getElementById('sound-btn').addEventListener('click', () => {
+        const v = currentVideo();
+        if (v) { v.muted = false; v.play().catch(() => {}); }
+        document.getElementById('sound-btn').classList.remove('show');
+      });
+      // O toque do usuário libera o áudio dos vídeos no navegador (iOS/Android/desktop)
+      document.getElementById('join-btn').addEventListener('click', () => {
+        Object.values(videoEls).forEach(v => {
+          const p = v.play();
+          if (p && p.catch) p.catch(() => {});
+          v.pause();
+        });
+        document.getElementById('join-overlay').remove();
+        startViewer();
+      }, { once: true });
+    }
+
+    async function startViewer() {
       window.addEventListener('resize', handleResize);
       try {
         await loadPdf();
-        const initialPage = await fetchInitialState();
-        await renderPage(initialPage || 1);
+        const initial = await fetchInitialState();
+        currentPage = 0;
+        await renderPage(initial ? initial.payload.page : 1);
+        if (initial) await applyRemoteState(initial.payload, initial.elapsed);
         subscribeToSync(
-          (pageNum) => renderPage(pageNum),
+          (payload, elapsed) => applyRemoteState(payload, elapsed),
           (status) => {
             const pulse = document.getElementById('status-pulse');
             const text = document.getElementById('status-text');
