@@ -37,7 +37,92 @@
     .presenter-app {
       display: grid;
       grid-template-rows: auto 1fr auto;
+      grid-template-columns: minmax(0, 1fr);
       height: 100vh;
+      height: 100dvh; /* no celular, desconta as barras do navegador */
+    }
+    .presenter-app > * { min-width: 0; }
+    .share-box, .share-box .url { min-width: 0; }
+    .presenter-app.with-notes {
+      grid-template-columns: minmax(0, 1fr) minmax(300px, 32vw);
+      grid-template-areas:
+        "top top"
+        "stage notes"
+        "controls notes";
+    }
+    .presenter-app.with-notes .topbar { grid-area: top; }
+    .presenter-app.with-notes .stage { grid-area: stage; }
+    .presenter-app.with-notes .controls { grid-area: controls; }
+    .notes {
+      grid-area: notes;
+      display: none;
+      flex-direction: column;
+      border-left: 1px solid var(--border);
+      background: var(--surface);
+      min-height: 0;
+    }
+    .presenter-app.with-notes .notes { display: flex; }
+    .notes-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .notes-title {
+      flex: 1;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
+    .notes-title strong { color: var(--accent); font-weight: 500; }
+    .notes-status {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .notes-status.error { color: #ef4444; }
+    .notes-size {
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      width: 30px;
+      height: 28px;
+      border-radius: 5px;
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .notes-size:hover { border-color: var(--accent); color: var(--accent); }
+    .notes textarea {
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+      resize: none;
+      border: 0;
+      outline: none;
+      background: transparent;
+      color: var(--text);
+      padding: 16px 18px 24px;
+      font-family: var(--font-body);
+      font-size: 18px;
+      line-height: 1.55;
+    }
+    .notes textarea::placeholder { color: #525252; }
+    @media (max-width: 900px) {
+      .presenter-app.with-notes {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto minmax(0, 1fr) auto minmax(200px, 42%);
+        grid-template-areas: "top" "stage" "controls" "notes";
+      }
+      .notes { border-left: 0; border-top: 1px solid var(--border); }
+      .video-hint { display: none; }
+      .controls { padding: 12px 16px; }
     }
     .topbar {
       padding: 14px 20px;
@@ -247,7 +332,8 @@
     .slide-video.active { display: block; }
     .slide-canvas-wrapper.hidden { display: none; }
     .viewer-app .slide-video { max-height: calc(100vh - 32px); }
-    .stage .slide-video { max-height: calc(100vh - 220px); }
+    .stage .slide-video { max-height: 100%; }
+    .presenter-app .stage { min-height: 0; }
     .overlay {
       position: fixed;
       inset: 0;
@@ -492,6 +578,7 @@
 
       const counter = document.getElementById('counter');
       if (counter) counter.innerHTML = `<strong>${currentPage}</strong> / ${totalPages}`;
+      if (!isViewer) showNotesFor(item);
       const hint = document.getElementById('video-hint');
       if (hint) hint.style.visibility = item.type === 'video' ? 'visible' : 'hidden';
 
@@ -684,10 +771,116 @@
       `;
     }
 
+    // ===== Script do apresentador =====
+    // Um texto por slide/vídeo, salvo no Firebase em /notes. Só aparece na tela do apresentador.
+    const notes = {};
+    const notesSaveTimers = {};
+    let notesKey = null;
+    let notesFontSize = 18;
+
+    function notesUrl(key) {
+      return `${FIREBASE_URL.replace(/\/$/, '')}/notes${key ? '/' + key : ''}.json`;
+    }
+
+    function noteKeyFor(item) {
+      return item.type === 'pdf' ? `slide-${item.page}` : `video-${item.src.replace(/\.[^.]+$/, '')}`;
+    }
+
+    function setNotesStatus(text, isError) {
+      const el = document.getElementById('notes-status');
+      if (!el) return;
+      el.textContent = text;
+      el.classList.toggle('error', !!isError);
+    }
+
+    function applyNotesFontSize() {
+      const ta = document.getElementById('notes-text');
+      if (ta) ta.style.fontSize = notesFontSize + 'px';
+      try { localStorage.setItem('brade-notes-font', String(notesFontSize)); } catch (e) {}
+    }
+
+    function showNotesFor(item) {
+      const ta = document.getElementById('notes-text');
+      if (!ta || !item) return;
+      notesKey = noteKeyFor(item);
+      const title = document.getElementById('notes-title');
+      const label = item.type === 'pdf' ? `slide ${item.page}` : `vídeo ${item.src.replace(/\.[^.]+$/, '')}`;
+      if (title) title.innerHTML = `Script · <strong>${label}</strong>`;
+      ta.value = notes[notesKey] || '';
+      ta.scrollTop = 0;
+      if (!notesSaveTimers[notesKey]) setNotesStatus('');
+    }
+
+    async function saveNote(key) {
+      delete notesSaveTimers[key];
+      const text = notes[key] || '';
+      try {
+        const res = await fetchWithTimeout(notesUrl(key), {
+          method: text.trim() ? 'PUT' : 'DELETE',
+          body: text.trim() ? JSON.stringify(text) : undefined
+        }, 6000);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        if (key === notesKey) setNotesStatus('Salvo');
+      } catch (err) {
+        console.error('Falha ao salvar script:', err);
+        if (key === notesKey) setNotesStatus('Não salvou — tentando de novo', true);
+        notesSaveTimers[key] = setTimeout(() => saveNote(key), 4000);
+      }
+    }
+
+    function applyRemoteNotes(path, data, merge) {
+      const ta = document.getElementById('notes-text');
+      const editing = ta && document.activeElement === ta;
+      if (path === '/') {
+        if (!merge) Object.keys(notes).forEach(k => { if (!notesSaveTimers[k]) delete notes[k]; });
+        Object.entries(data || {}).forEach(([k, v]) => { if (!notesSaveTimers[k]) notes[k] = v; });
+      } else {
+        const k = path.replace(/^\//, '').split('/')[0];
+        if (notesSaveTimers[k]) return;
+        if (data === null) delete notes[k]; else notes[k] = data;
+      }
+      // Atualiza o texto na tela se alguém editou em outro computador (sem atrapalhar quem está digitando)
+      if (ta && notesKey && !editing && !notesSaveTimers[notesKey]) ta.value = notes[notesKey] || '';
+    }
+
+    function setupNotes() {
+      const ta = document.getElementById('notes-text');
+      try {
+        const saved = parseInt(localStorage.getItem('brade-notes-font'), 10);
+        if (saved >= 12 && saved <= 40) notesFontSize = saved;
+      } catch (e) {}
+      applyNotesFontSize();
+      document.getElementById('notes-smaller').addEventListener('click', () => {
+        notesFontSize = Math.max(12, notesFontSize - 2); applyNotesFontSize();
+      });
+      document.getElementById('notes-bigger').addEventListener('click', () => {
+        notesFontSize = Math.min(40, notesFontSize + 2); applyNotesFontSize();
+      });
+      ta.addEventListener('input', () => {
+        if (!notesKey) return;
+        const key = notesKey;
+        notes[key] = ta.value;
+        setNotesStatus('Salvando…');
+        clearTimeout(notesSaveTimers[key]);
+        notesSaveTimers[key] = setTimeout(() => saveNote(key), 700);
+      });
+      // Recebe o script salvo e acompanha edições feitas em outros computadores
+      const es = new EventSource(notesUrl());
+      const handle = (merge) => (e) => {
+        try {
+          const msg = JSON.parse(e.data);
+          if (msg) applyRemoteNotes(msg.path, msg.data, merge);
+        } catch (err) {}
+      };
+      es.addEventListener('put', handle(false));
+      es.addEventListener('patch', handle(true));
+      es.addEventListener('cancel', () => setNotesStatus('Sem permissão para o script', true));
+    }
+
     // ===== Apresentador =====
     async function renderPresenter() {
       document.getElementById('app').innerHTML = `
-        <div class="presenter-app">
+        <div class="presenter-app${FIREBASE_URL ? ' with-notes' : ''}">
           <div class="topbar">
             <div class="brand">brade.slides</div>
             <div class="share-box">
@@ -710,6 +903,15 @@
             </button>
             <div class="video-hint" id="video-hint" style="visibility:hidden">Vídeo · espaço = play/pause</div>
           </div>
+          <div class="notes">
+            <div class="notes-head">
+              <div class="notes-title" id="notes-title">Script</div>
+              <span class="notes-status" id="notes-status"></span>
+              <button class="notes-size" id="notes-smaller" aria-label="Diminuir letra">A−</button>
+              <button class="notes-size" id="notes-bigger" aria-label="Aumentar letra">A+</button>
+            </div>
+            <textarea id="notes-text" spellcheck="true" placeholder="Escreva aqui o script deste slide. Salva sozinho e só aparece para quem apresenta."></textarea>
+          </div>
         </div>
       `;
       createVideoElements(document.getElementById('stage'));
@@ -718,7 +920,7 @@
       document.getElementById('prev-btn').addEventListener('click', () => goTo(currentPage - 1));
       document.getElementById('next-btn').addEventListener('click', () => goTo(currentPage + 1));
       document.addEventListener('keydown', (e) => {
-        if (e.target.tagName === 'INPUT') return;
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
         const v = currentVideo();
         if (e.key === ' ' && e.target.tagName === 'VIDEO') return; // controle nativo já trata
         if (e.key === ' ' && v) {
@@ -731,6 +933,7 @@
         }
       });
       window.addEventListener('resize', handleResize);
+      if (FIREBASE_URL) setupNotes();
       try {
         await loadPdf();
         currentPage = 0;
